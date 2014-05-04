@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+      <property name="connection.url">jdbc:mysql://127.0.0.1/AgaBacbone</property>
+      <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+      <property name="connection.username">root</property>
+      <property name="connection.password"></property>
+      <mapping class="com.craftaga.agabacbone.persistence.entities.IpaddressEntity"/>
+      <mapping class="com.craftaga.agabacbone.persistence.entities.LocationEntity"/>
+      <mapping class="com.craftaga.agabacbone.persistence.entities.ServerEntity"/>
+      <mapping class="com.craftaga.agabacbone.persistence.entities.SessionEntity"/>
+      <mapping class="com.craftaga.agabacbone.persistence.entities.UserEntity"/>
+      <mapping class="com.craftaga.agabacbone.persistence.entities.UserhasipaddressEntity"/>
+      <mapping class="com.craftaga.agabacbone.persistence.entities.UsernamesEntity"/>
+      <mapping class="com.craftaga.agabacbone.persistence.entities.UsernameshassessionEntity"/>
+      <mapping class="com.craftaga.agabacbone.persistence.entities.WorldEntity"/>
+      <!-- DB schema will be updated if needed -->
+    <!-- <property name="hbm2ddl.auto">update</property> -->
+  </session-factory>
+</hibernate-configuration>
+
+
+
+<property name="hibernateProperties">
+    <props>
+        <prop key="hibernate.show_sql">false</prop>
+        <prop key="hibernate.current_session_context_class">thread</prop>
+        <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+        <prop key="hibernate.hbm2ddl.auto">update</prop>
+    </props>
+</property>
+</bean>
+
+<bean id="mySqlDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+<property name="url" value="jdbc:mysql://127.0.0.1:3306/agaBacbone" />
+<property name="password" value="" />
+<property name="username" value="root" />
+</bean>
+
+<bean id="ServerPersistence" class="com.craftaga.agabacbone.persistence.entities.ServerPersistence">
+<property name="sessionFactory" ref="sessionFactory" />
+</bean>

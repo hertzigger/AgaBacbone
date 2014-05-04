@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="mySqlDataSource" />
+        <property name="annotatedClasses">
+            <list>
+                <value>com.craftaga.agabacbone.persistence.PlayerEntity</value>
+                <value>com.craftaga.agabacbone.persistence.BankEntity</value>
+                <value>com.craftaga.agabacbone.persistence.BankhasadminEntity</value>
+                <value>com.craftaga.agabacbone.persistence.BankhaseconomyEntity</value>
+                <value>com.craftaga.agabacbone.persistence.PlayerhasbankEntity</value>
+                <value>com.craftaga.agabacbone.persistence.PlayerhaseconomyEntity</value>
+                <value>com.craftaga.agabacbone.persistence.EconomyEntity</value>
+            </list>
+        </property>
+
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.current_session_context_class">thread</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="mySqlDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/agaEconomy" />
+        <property name="password" value="" />
+        <property name="username" value="root" />
+    </bean>
+
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <bean name="dao" id="dao" class="com.craftaga.agabacbone.persistence.DAO">
+        <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="playerDao" ref="playerDao"/>
+        <property name="economyDao" ref="economyDao"/>
+    </bean>
+
+    <bean name="playerDao" id="playerDao" class="com.craftaga.agabacbone.persistence.PlayerDao">
+        <constructor-arg ref="dao"/>
+    </bean>
+
+    <bean name="economyDao" id="economyDao" class="com.craftaga.agabacbone.persistence.EconomyDao">
+        <constructor-arg ref="dao"/>
+    </bean>
+
+</beans>

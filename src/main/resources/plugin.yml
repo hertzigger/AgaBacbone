@@ -1,0 +1,8 @@
+name: AgaBacbone
+main: com.craftaga.agabacbone.AgaBacBone
+version: 0.1.0
+
+commands:
+  timer:
+    description: Manually Set and Remove timers from players
+    usage: /timer
