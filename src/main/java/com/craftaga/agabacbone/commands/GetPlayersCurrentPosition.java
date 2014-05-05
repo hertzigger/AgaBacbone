@@ -31,7 +31,6 @@ public class GetPlayersCurrentPosition extends Command implements IValueHolderCo
 
     @Override
     public void execute() {
-        System.out.println(player.getLocation().getX());
         setValue(player.getLocation());
     }
 }
