@@ -31,6 +31,10 @@ public class UserSession implements IUserSession {
     final private HashMap<IScheduledTimerHandler, ScheduledFuture> scheduledFutureHashMap = new HashMap<IScheduledTimerHandler, ScheduledFuture>();
     final private ConcurrentHashMap<String, Object> states = new ConcurrentHashMap<String, Object>();
 
+    private int sessionId;
+    private int usernameId;
+    private UUID userId;
+
     @Override
     public TaskExecutor getTaskExecutor() {
         return taskExecutor;
@@ -52,6 +56,17 @@ public class UserSession implements IUserSession {
     }
 
     @Override
+    public void close() {
+        try {
+            persistenceManager.getSessionPersistence().logout(getSessionId());
+            persistenceManager.getUserPersistence().setLogout(getUserId());
+            persistenceManager.getUsernamePersistence().setLogout(getUsernameId());
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    @Override
     public IPersistenceManager getPersistenceManager() {
         return persistenceManager;
     }
@@ -66,10 +81,10 @@ public class UserSession implements IUserSession {
         int ipId = 0;
         try {
             ipId = persistenceManager.getIpAddressPersistence().addOrFetch(getUser().getAddress().getAddress());
-            UUID userId = persistenceManager.getUserPersistence().login(getUser().getUniqueId());
-            int userHasIpID = persistenceManager.getUserHasIpAddressPersistence().addOrFetch(ipId, userId);
-            int usernameId = persistenceManager.getUsernamePersistence().addOrFetch(userId, getUser().getName());
-            int sessionId = persistenceManager.getSessionPersistence().addSession(
+            userId = persistenceManager.getUserPersistence().login(getUser().getUniqueId());
+            persistenceManager.getUserHasIpAddressPersistence().addOrFetch(ipId, userId);
+            usernameId = persistenceManager.getUsernamePersistence().addOrFetch(userId, getUser().getName());
+            sessionId = persistenceManager.getSessionPersistence().addSession(
                     new Date(), getSessionHandler().getWorldManager().getWorldId(getUser().getWorld())
             );
             persistenceManager.getUsernameHasSessionPersistence().add(usernameId, sessionId);
@@ -149,5 +164,25 @@ public class UserSession implements IUserSession {
         for (Map.Entry<IScheduledTimerHandler, ScheduledFuture> entry : scheduledFutureHashMap.entrySet()) {
             entry.getValue().cancel(true);
         }
+    }
+
+    @Override
+    public int getSessionId() {
+        return sessionId;
+    }
+
+    @Override
+    public void setSessionId(int sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    @Override
+    public int getUsernameId() {
+        return usernameId;
+    }
+
+    @Override
+    public UUID getUserId() {
+        return userId;
     }
 }

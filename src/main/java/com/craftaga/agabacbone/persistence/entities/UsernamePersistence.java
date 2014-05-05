@@ -1,6 +1,8 @@
 package com.craftaga.agabacbone.persistence.entities;
 
 import com.craftaga.agabacbone.persistence.MysqlPersistence;
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -20,11 +22,12 @@ import java.util.UUID;
  */
 public class UsernamePersistence extends MysqlPersistence implements IUsernamePersistence {
     public static final String FETCH_USERNAME = "SELECT idUsername FROM username WHERE username=? AND uuid=?";
-    public static final String ADD_USERNAME = "INSERT INTO username (username, created, modified, lastlogin, uuid)" +
+    public static final String ADD_USERNAME = "INSERT INTO username (username, created, modified, firstLogin, uuid)" +
             " VALUES (?,?,?,?,?)";
+    public static final String LOGOUT = "UPDATE username SET lastLogout=?, modified=? WHERE idUsername=?";
 
 
-    public UsernamePersistence(DataSource dataSource) {
+    public UsernamePersistence(BoneCPDataSource dataSource) {
         super(dataSource);
     }
 
@@ -52,10 +55,36 @@ public class UsernamePersistence extends MysqlPersistence implements IUsernamePe
                 statement.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
             }
         }
         return 0;
+    }
+
+    @Override
+    public void setLogout(int usernameId) throws SQLException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+        try {
+            connection = getDataSource().getConnection();
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(LOGOUT, Statement.RETURN_GENERATED_KEYS);
+            Timestamp time = new Timestamp(new Date().getTime());
+            statement.setTimestamp(1, time);
+            statement.setTimestamp(2, time);
+            statement.setInt(3, usernameId);
+            statement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
     }
 
     @Override
@@ -87,7 +116,7 @@ public class UsernamePersistence extends MysqlPersistence implements IUsernamePe
                 statement.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
             }
         }
     }

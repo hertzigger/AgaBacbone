@@ -11,4 +11,6 @@ import java.util.Date;
  */
 public interface ISessionPersistence {
     int addSession(Date date, int worldId) throws SQLException;
+
+    void logout(int sessionId) throws SQLException;
 }

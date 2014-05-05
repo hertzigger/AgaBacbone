@@ -1,6 +1,8 @@
 package com.craftaga.agabacbone.persistence.entities;
 
 import com.craftaga.agabacbone.persistence.MysqlPersistence;
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -21,7 +23,7 @@ public class UserHasIpAddressPersistence extends MysqlPersistence implements IUs
     public static final String ADD_LINK = "INSERT INTO userHasIpAddress (idIpAddress, created, modified, uuid) VALUES (?,?,?,?)";
 
 
-    public UserHasIpAddressPersistence(DataSource dataSource) {
+    public UserHasIpAddressPersistence(BoneCPDataSource dataSource) {
         super(dataSource);
     }
 
@@ -41,13 +43,16 @@ public class UserHasIpAddressPersistence extends MysqlPersistence implements IUs
                 return true;
             }
         } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback();
+            }
             throw e;
         } finally {
             if (statement != null) {
                 statement.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
             }
         }
         return false;
@@ -60,7 +65,7 @@ public class UserHasIpAddressPersistence extends MysqlPersistence implements IUs
         try {
             connection = getDataSource().getConnection();
             connection.setAutoCommit(false);
-            if (rowExists(ipId, userId)) {
+            if (!rowExists(ipId, userId)) {
                 statement = connection.prepareStatement(ADD_LINK, Statement.RETURN_GENERATED_KEYS);
                 statement.setInt(1, ipId);
                 statement = setModifiedAndCreated(statement, 2, 3);
@@ -74,13 +79,16 @@ public class UserHasIpAddressPersistence extends MysqlPersistence implements IUs
             connection.commit();
             return idRow;
         } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback();
+            }
             throw e;
         } finally {
             if (statement != null) {
                 statement.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
             }
         }
     }

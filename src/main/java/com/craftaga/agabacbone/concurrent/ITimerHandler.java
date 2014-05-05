@@ -2,6 +2,7 @@ package com.craftaga.agabacbone.concurrent;
 
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
 import com.craftaga.agabacbone.session.IUserSession;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * description
@@ -16,4 +17,8 @@ public interface ITimerHandler extends Runnable {
     void setUserSession(IUserSession userSession);
 
     CommandQueue getCommandQueue();
+
+    ClassPathXmlApplicationContext getContext();
+
+    void setContext(ClassPathXmlApplicationContext context);
 }

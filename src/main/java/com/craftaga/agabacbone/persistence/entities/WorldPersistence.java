@@ -3,6 +3,8 @@ package com.craftaga.agabacbone.persistence.entities;
 import com.craftaga.agabacbone.concurrent.IWorldManager;
 import com.craftaga.agabacbone.concurrent.WorldManager;
 import com.craftaga.agabacbone.persistence.MysqlPersistence;
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPDataSource;
 import org.bukkit.World;
 
 import javax.sql.DataSource;
@@ -27,7 +29,7 @@ public class WorldPersistence extends MysqlPersistence implements IWorldPersiste
             " VALUES (?,?,?,?)";
     public static final String WORLD_EXISTS = "select idWorld from World WHERE name=? AND idServer=?";
 
-    public WorldPersistence(DataSource dataSource) {
+    public WorldPersistence(BoneCPDataSource dataSource) {
         super(dataSource);
     }
 
@@ -55,7 +57,7 @@ public class WorldPersistence extends MysqlPersistence implements IWorldPersiste
                 insert.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
             }
         }
     }
@@ -83,7 +85,7 @@ public class WorldPersistence extends MysqlPersistence implements IWorldPersiste
                 statement.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
             }
         }
         return 0;
@@ -122,7 +124,7 @@ public class WorldPersistence extends MysqlPersistence implements IWorldPersiste
                 insert.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
             }
         }
         return worldManager;

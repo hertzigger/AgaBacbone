@@ -18,6 +18,8 @@ import com.craftaga.agabacbone.persistence.entities.UserPersistence;
 import com.craftaga.agabacbone.persistence.entities.UsernameHasSessionPersistence;
 import com.craftaga.agabacbone.persistence.entities.UsernamePersistence;
 import com.craftaga.agabacbone.persistence.entities.WorldPersistence;
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 import javax.sql.DataSource;
 
@@ -40,7 +42,7 @@ public class PersistenceManager extends MysqlPersistence implements IPersistence
     private IWorldPersistence worldPersistence;
     private IServerPersistence serverPersistence;
 
-    public PersistenceManager(DataSource dataSource)
+    public PersistenceManager(BoneCPDataSource dataSource)
     {
         super(dataSource);
         ipAddressPersistence = new IpAddressPersistence(dataSource);

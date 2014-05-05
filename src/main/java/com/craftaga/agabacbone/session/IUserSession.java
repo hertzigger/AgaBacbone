@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+import java.util.UUID;
+
 /**
  * description
  *
@@ -41,4 +43,14 @@ public interface IUserSession extends ICommandQueueScheduler {
     ThreadPoolTaskScheduler getThreadPoolTaskScheduler();
 
     void setThreadPoolTaskScheduler(ThreadPoolTaskScheduler threadPoolTaskScheduler);
+
+    void close();
+
+    int getSessionId();
+
+    void setSessionId(int sessionId);
+
+    int getUsernameId();
+
+    UUID getUserId();
 }

@@ -1,6 +1,8 @@
 package com.craftaga.agabacbone.persistence.entities;
 
 import com.craftaga.agabacbone.persistence.MysqlPersistence;
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -20,13 +22,14 @@ import java.util.Date;
 public class SessionPersistence extends MysqlPersistence implements ISessionPersistence {
     public static final String ADD_SESSION = "INSERT INTO session (login, created, modified, idWorld) " +
             "VALUES (?,?,?,?)";
+    public static final String LOGOUT = "UPDATE session SET logout=?, modified=? WHERE idSession=?";
 
-    public SessionPersistence(DataSource dataSource) {
+    public SessionPersistence(BoneCPDataSource dataSource) {
         super(dataSource);
     }
 
     @Override
-    public int addSession(final Date date,final int worldId) throws SQLException {
+    public int addSession(final Date date, final int worldId) throws SQLException {
         PreparedStatement statement = null;
         Connection connection = null;
         int sessionId = 0;
@@ -51,7 +54,33 @@ public class SessionPersistence extends MysqlPersistence implements ISessionPers
                 statement.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
+            }
+        }
+    }
+
+    @Override
+    public void logout(final int sessionId) throws SQLException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+        try {
+            connection = getDataSource().getConnection();
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(LOGOUT, Statement.RETURN_GENERATED_KEYS);
+            Timestamp time = new Timestamp(new Date().getTime());
+            statement.setTimestamp(1, time);
+            statement.setTimestamp(2, time);
+            statement.setInt(3, sessionId);
+            statement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
             }
         }
     }

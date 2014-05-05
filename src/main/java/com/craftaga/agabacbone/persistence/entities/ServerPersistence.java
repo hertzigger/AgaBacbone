@@ -1,6 +1,8 @@
 package com.craftaga.agabacbone.persistence.entities;
 
 import com.craftaga.agabacbone.persistence.MysqlPersistence;
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -22,7 +24,7 @@ public class ServerPersistence extends MysqlPersistence implements IServerPersis
     private static final String CREATE_SERVER = "insert into Server (idServer, name, created, modified) VALUES (null,?,?,?)";
     private static final String SERVER_FETCH_ID = "select idServer from Server WHERE name=?";
 
-    public ServerPersistence(DataSource dataSource) {
+    public ServerPersistence(BoneCPDataSource dataSource) {
         super(dataSource);
     }
 
@@ -43,6 +45,9 @@ public class ServerPersistence extends MysqlPersistence implements IServerPersis
         } finally {
             if (insert != null) {
                 insert.close();
+            }
+            if (connection != null) {
+                connection.close();
             }
         }
     }
@@ -66,6 +71,9 @@ public class ServerPersistence extends MysqlPersistence implements IServerPersis
         } finally {
             if (servers != null) {
                 servers.close();
+            }
+            if (connection != null) {
+                connection.close();
             }
         }
         return false;
@@ -93,7 +101,7 @@ public class ServerPersistence extends MysqlPersistence implements IServerPersis
                 server.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
             }
         }
         return serverId;

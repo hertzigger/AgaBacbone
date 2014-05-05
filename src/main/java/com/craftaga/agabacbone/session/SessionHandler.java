@@ -231,6 +231,7 @@ public class SessionHandler implements ISessionHandler {
         if (userSessionHashMap.containsKey(player.getUniqueId())) {
             IUserSession session = userSessionHashMap.get(player.getUniqueId());
             session.removeAllScheduledJobs();
+            //session.close();
             userSessionHashMap.remove(player.getUniqueId());
         }
     }

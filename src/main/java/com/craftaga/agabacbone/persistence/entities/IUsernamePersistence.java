@@ -13,4 +13,6 @@ public interface IUsernamePersistence {
     int addOrFetch(UUID userId, String name) throws SQLException;
 
     int fetchUsername(UUID userId, String name) throws SQLException;
+
+    void setLogout(int usernameId) throws SQLException;
 }

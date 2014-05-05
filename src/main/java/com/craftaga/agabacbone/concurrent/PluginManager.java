@@ -3,6 +3,7 @@ package com.craftaga.agabacbone.concurrent;
 import com.craftaga.agabacbone.IPlayerNameResolver;
 import com.craftaga.agabacbone.PlayerNameResolver;
 import com.craftaga.agabacbone.concurrent.handlers.timer.ExampleTimerHandler;
+import com.craftaga.agabacbone.concurrent.handlers.timer.LocationLoggerTimer;
 import com.craftaga.agabacbone.concurrent.methods.TimerAddMethod;
 import com.craftaga.agabacbone.concurrent.methods.TimerMethod;
 import com.craftaga.agabacbone.persistence.IPersistenceManager;
@@ -13,7 +14,10 @@ import com.craftaga.agabacbone.persistence.entities.ServerPersistence;
 import com.craftaga.agabacbone.listener.LoginListener;
 import com.craftaga.agabacbone.persistence.entities.WorldPersistence;
 import com.craftaga.agabacbone.session.ISessionHandler;
+import com.craftaga.agabacbone.session.ScheduledTimerHandler;
 import com.craftaga.agabacbone.session.SessionHandler;
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPDataSource;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -42,18 +46,19 @@ public class PluginManager implements IPluginManager {
 
     private IWorldManager worldManager = new WorldManager();
     private static IPluginManager pluginManager;
-    private DataSource dataSource;
+    private BoneCPDataSource dataSource;
     private int serverId;
+    private ClassPathXmlApplicationContext context;
 
 
     private PluginManager(JavaPlugin javaPlugin)
     {
         this.plugin = javaPlugin;
         ClassLoader cl = ServerPersistence.class.getClassLoader();
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(new String[]{"hibernate-beans.xml"}, false);
-        ctx.setClassLoader(cl);
-        ctx.refresh();
-        dataSource = (DataSource) ctx.getBean("mainDataSource");
+        context = new ClassPathXmlApplicationContext(new String[]{"hibernate-beans.xml"}, false);
+        context.setClassLoader(cl);
+        context.refresh();
+        dataSource = (BoneCPDataSource) context.getBean("mainDataSource");
         persistenceManager = new PersistenceManager(dataSource);
         IServerPersistence serverPersistence = persistenceManager.getServerPersistence();
         IWorldPersistence worldPersistence = persistenceManager.getWorldPersistence();
@@ -71,24 +76,12 @@ public class PluginManager implements IPluginManager {
         sessionHandler.setPlayerNameResolver(playerNameResolver);
         sessionHandler.setPersistenceManager(persistenceManager);
         sessionHandler.setWorldManager(worldManager);
-        timerManager.addTimerHandler("example", new ExampleTimerHandler());
+        timerManager.addTimerHandler("example", new ExampleTimerHandler(context));
         IMethod timerMethod = new TimerMethod().setName("timer");
         IMethod timerAddMethod = new TimerAddMethod().setName("addSession");
         timerMethod.addMethod(timerAddMethod);
         sessionHandler.getCommandHandler().addMethod(timerMethod);
-//        Collection<WorldEntity> worldEntities = worldPersistence.getWorldsForServerEntity(serverEntity);
-//        for (org.bukkit.WorldPersistence world : getPlugin().getServer().getWorlds()) {
-//            Boolean present = false;
-//            for (WorldEntity worldEntity: worldEntities) {
-//                if (worldEntity.getName().equals(world.getName())) {
-//                    present = true;
-//                }
-//            }
-//            if (!present) {
-//                worldPersistence.createWorld(world.getName(), serverEntity);
-//            }
-//        }
-
+        sessionHandler.scheduleTimerHandlerAtFixedRate(new ScheduledTimerHandler(new LocationLoggerTimer(context), 5000));
     }
 
     public synchronized static IPluginManager getInstance(JavaPlugin javaPlugin)

@@ -1,6 +1,8 @@
 package com.craftaga.agabacbone.persistence.entities;
 
 import com.craftaga.agabacbone.persistence.MysqlPersistence;
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -19,11 +21,12 @@ import java.util.UUID;
  * @since 03/05/14
  */
 public class UserPersistence extends MysqlPersistence implements IUserPersistence {
-    public static final String ADD_USER = "INSERT INTO user (uuid, created, modified, lastLogin)" +
+    public static final String ADD_USER = "INSERT INTO user (uuid, created, modified, firstLogin)" +
             " VALUES (?,?,?,?)";
     public static final String FETCH_USER = "SELECT uuid FROM user WHERE uuid=?";
+    public static final String LOGOUT = "UPDATE user SET lastLogout=?, modified=? WHERE uuid=?";
 
-    public UserPersistence(DataSource dataSource) {
+    public UserPersistence(BoneCPDataSource dataSource) {
         super(dataSource);
     }
 
@@ -49,7 +52,7 @@ public class UserPersistence extends MysqlPersistence implements IUserPersistenc
                 statement.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
             }
         }
         return null;
@@ -84,7 +87,33 @@ public class UserPersistence extends MysqlPersistence implements IUserPersistenc
                 statement.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
+            }
+        }
+    }
+
+    @Override
+    public void setLogout(UUID userId) throws SQLException {
+        PreparedStatement statement = null;
+        Connection connection = null;
+        try {
+            connection = getDataSource().getConnection();
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(LOGOUT, Statement.RETURN_GENERATED_KEYS);
+            Timestamp time = new Timestamp(new Date().getTime());
+            statement.setTimestamp(1, time);
+            statement.setTimestamp(2, time);
+            statement.setString(3, userId.toString());
+            statement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
             }
         }
     }

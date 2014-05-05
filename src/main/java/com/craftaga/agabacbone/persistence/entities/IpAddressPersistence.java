@@ -3,6 +3,8 @@ package com.craftaga.agabacbone.persistence.entities;
 import com.craftaga.agabacbone.concurrent.IWorldManager;
 import com.craftaga.agabacbone.concurrent.WorldManager;
 import com.craftaga.agabacbone.persistence.MysqlPersistence;
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 import javax.sql.DataSource;
 import java.net.InetAddress;
@@ -24,7 +26,7 @@ public class IpAddressPersistence extends MysqlPersistence implements IIpAddress
     public static final String IP_ADDRESS_EXISTS = "select idIpAddress from ipAddress WHERE address=?";
     public static final String ADD_IP_ADDRESS = "insert into ipAddress (address, created, modified) VALUES (?,?,?)";
 
-    public IpAddressPersistence(DataSource dataSource) {
+    public IpAddressPersistence(BoneCPDataSource dataSource) {
         super(dataSource);
     }
 
@@ -48,7 +50,7 @@ public class IpAddressPersistence extends MysqlPersistence implements IIpAddress
                 insert.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
             }
         }
     }
@@ -76,7 +78,7 @@ public class IpAddressPersistence extends MysqlPersistence implements IIpAddress
                 statement.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
             }
         }
         return 0;
@@ -109,7 +111,7 @@ public class IpAddressPersistence extends MysqlPersistence implements IIpAddress
                 statement.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
             }
         }
     }

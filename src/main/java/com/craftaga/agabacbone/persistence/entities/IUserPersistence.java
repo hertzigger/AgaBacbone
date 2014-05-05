@@ -15,4 +15,6 @@ public interface IUserPersistence {
     UUID fetchUser(UUID uuid) throws SQLException;
 
     UUID login(UUID uniqueId) throws SQLException;
+
+    void setLogout(UUID userId) throws SQLException;
 }

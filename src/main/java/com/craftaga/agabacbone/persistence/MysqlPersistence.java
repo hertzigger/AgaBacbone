@@ -1,8 +1,7 @@
 package com.craftaga.agabacbone.persistence;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import com.jolbox.bonecp.BoneCPDataSource;
 
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -15,14 +14,14 @@ import java.sql.Timestamp;
  */
 public class MysqlPersistence implements IMysqlPersistence {
 
-    private DataSource dataSource;
+    private BoneCPDataSource dataSource;
 
-    public MysqlPersistence(DataSource dataSource)
+    public MysqlPersistence(BoneCPDataSource dataSource)
     {
         this.dataSource = dataSource;
     }
     @Override
-    public DataSource getDataSource() {
+    public BoneCPDataSource getDataSource() {
         return dataSource;
     }
 

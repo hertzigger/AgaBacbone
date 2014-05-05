@@ -1,5 +1,8 @@
 package com.craftaga.agabacbone.persistence;
 
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPDataSource;
+
 import javax.sql.DataSource;
 
 /**
@@ -9,5 +12,5 @@ import javax.sql.DataSource;
  * @since 03/05/14
  */
 public interface IMysqlPersistence {
-    DataSource getDataSource();
+    BoneCPDataSource getDataSource();
 }

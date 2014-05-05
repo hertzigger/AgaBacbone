@@ -1,6 +1,8 @@
 package com.craftaga.agabacbone.persistence.entities;
 
 import com.craftaga.agabacbone.persistence.MysqlPersistence;
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -16,11 +18,11 @@ import java.sql.Statement;
  * @since 04/05/14
  */
 public class UsernameHasSessionPersistence extends MysqlPersistence implements IUsernameHasSessionPersistence {
-    public static final String FETCH_ROW = "SELECT FROM usernameHasSession WHERE idUserName=? AND idSession=?";
+    public static final String FETCH_ROW = "SELECT idUsername FROM usernameHasSession WHERE idUsername=? AND idSession=?";
     public static final String ADD_ROW = "INSERT INTO usernameHasSession (idUsername, created, modified, idSession) " +
             " VALUES (?,?,?,?)";
 
-    public UsernameHasSessionPersistence(DataSource dataSource) {
+    public UsernameHasSessionPersistence(BoneCPDataSource dataSource) {
         super(dataSource);
     }
 
@@ -34,13 +36,12 @@ public class UsernameHasSessionPersistence extends MysqlPersistence implements I
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(FETCH_ROW);
             statement.setInt(1, usernameId);
+            statement.setInt(2, sessionId);
             ResultSet resultSet = statement.executeQuery();
-            statement.setInt(4, sessionId);
             connection.commit();
             while (resultSet.next()) {
                 return true;
             }
-            connection.commit();
         } catch (SQLException e) {
             throw e;
         } finally {
@@ -48,7 +49,7 @@ public class UsernameHasSessionPersistence extends MysqlPersistence implements I
                 statement.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
             }
         }
         return false;
@@ -76,7 +77,7 @@ public class UsernameHasSessionPersistence extends MysqlPersistence implements I
                 statement.close();
             }
             if (connection != null) {
-                connection.rollback();
+                connection.close();
             }
         }
     }

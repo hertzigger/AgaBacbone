@@ -16,15 +16,10 @@ import java.util.Locale;
  */
 public class ExampleTimerHandler extends TimerHandler {
 
-    private ClassPathXmlApplicationContext stringContext;
-
-    public ExampleTimerHandler()
-    {
-        ClassLoader cl = this.getClass().getClassLoader();
-        stringContext = new ClassPathXmlApplicationContext(new String[]{"i18n/messageContext.xml"}, false);
-        stringContext.setClassLoader(cl);
-        stringContext.refresh();
+    public ExampleTimerHandler(ClassPathXmlApplicationContext context) {
+        super(context);
     }
+
 
     @Override
     public CommandQueue getCommandQueue()
@@ -32,7 +27,7 @@ public class ExampleTimerHandler extends TimerHandler {
         CommandQueue queue = new CommandQueue(getUserSession().getSessionHandler().getPluginManager());
         SendMessageToPlayerCommand msg = new SendMessageToPlayerCommand(
                 queue,
-                "" + ChatColor.WHITE + ChatColor.BOLD + stringContext.getMessage(
+                "" + ChatColor.WHITE + ChatColor.BOLD + getContext().getMessage(
                         "timer.example.msg",
                         new String[] {getUserSession().getUser().getName()},
                         Locale.ENGLISH),
