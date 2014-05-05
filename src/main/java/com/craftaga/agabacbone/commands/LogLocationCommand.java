@@ -15,12 +15,12 @@ import java.sql.SQLException;
 public class LogLocationCommand extends Command {
     private IValueHolderCommand<Location> locationHolder;
     private ILocationPersistence locationPersistence;
-    private int sessionId;
+    private IValueHolderCommand<Integer> sessionId;
     public LogLocationCommand(
             final CommandQueue commandQueue,
             final IValueHolderCommand<Location> location,
             final ILocationPersistence locationPersistence,
-            final int sessionId
+            final IValueHolderCommand<Integer> sessionId
     ) {
         super(commandQueue);
         this.locationHolder = location;
@@ -39,7 +39,7 @@ public class LogLocationCommand extends Command {
                     location.getZ(),
                     location.getPitch(),
                     location.getYaw(),
-                    sessionId);
+                    sessionId.getValue());
         } catch (SQLException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

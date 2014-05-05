@@ -6,6 +6,7 @@ import com.craftaga.agabacbone.concurrent.handlers.timer.ExampleTimerHandler;
 import com.craftaga.agabacbone.concurrent.handlers.timer.LocationLoggerTimer;
 import com.craftaga.agabacbone.concurrent.methods.TimerAddMethod;
 import com.craftaga.agabacbone.concurrent.methods.TimerMethod;
+import com.craftaga.agabacbone.listener.WorldListener;
 import com.craftaga.agabacbone.persistence.IPersistenceManager;
 import com.craftaga.agabacbone.persistence.entities.IServerPersistence;
 import com.craftaga.agabacbone.persistence.entities.IWorldPersistence;
@@ -148,6 +149,8 @@ public class PluginManager implements IPluginManager {
     public void setupListeners()
     {
         getPlugin().getServer().getPluginManager().registerEvents(new LoginListener(), getPlugin());
+        getPlugin().getServer().getPluginManager().registerEvents(new WorldListener(), getPlugin());
+
     }
 
     public static void main(String[] args)

@@ -3,6 +3,7 @@ package com.craftaga.agabacbone.session;
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
 import com.craftaga.agabacbone.persistence.IPersistenceManager;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.task.TaskExecutor;
@@ -84,9 +85,9 @@ public class UserSession implements IUserSession {
             userId = persistenceManager.getUserPersistence().login(getUser().getUniqueId());
             persistenceManager.getUserHasIpAddressPersistence().addOrFetch(ipId, userId);
             usernameId = persistenceManager.getUsernamePersistence().addOrFetch(userId, getUser().getName());
-            sessionId = persistenceManager.getSessionPersistence().addSession(
+            setSessionId(persistenceManager.getSessionPersistence().addSession(
                     new Date(), getSessionHandler().getWorldManager().getWorldId(getUser().getWorld())
-            );
+            ));
             persistenceManager.getUsernameHasSessionPersistence().add(usernameId, sessionId);
         } catch (SQLException e) {
              getSessionHandler().getPluginManager().getPlugin().getLogger().info(ExceptionUtils.getStackTrace(e));
@@ -184,5 +185,18 @@ public class UserSession implements IUserSession {
     @Override
     public UUID getUserId() {
         return userId;
+    }
+
+    @Override
+    public void changeWorld(World world) {
+        try {
+            persistenceManager.getSessionPersistence().logout(getSessionId());
+            setSessionId(persistenceManager.getSessionPersistence().addSession(
+                    new Date(), getSessionHandler().getWorldManager().getWorldId(world)
+            ));
+            persistenceManager.getUsernameHasSessionPersistence().add(getUsernameId(), getSessionId());
+        } catch (SQLException e) {
+            getSessionHandler().getPluginManager().getPlugin().getLogger().info(ExceptionUtils.getStackTrace(e));
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.craftaga.agabacbone.concurrent.handlers.timer;
 
 import com.craftaga.agabacbone.commands.Command;
 import com.craftaga.agabacbone.commands.GetPlayersCurrentPosition;
+import com.craftaga.agabacbone.commands.GetSessionId;
 import com.craftaga.agabacbone.commands.IValueHolderCommand;
 import com.craftaga.agabacbone.commands.LogLocationCommand;
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
@@ -27,6 +28,11 @@ public class LocationLoggerTimer extends TimerHandler {
 
         Location pl = getUserSession().getUser().getLocation();
 
+        IValueHolderCommand<Integer> getSession = new GetSessionId(
+                commandQueue,
+                getUserSession()
+        );
+
         IValueHolderCommand<Location> getLocation = new GetPlayersCurrentPosition (
                 commandQueue,
                 getUserSession().getUser()
@@ -36,10 +42,11 @@ public class LocationLoggerTimer extends TimerHandler {
                 commandQueue,
                 getLocation,
                 getUserSession().getPersistenceManager().getLocationPersistence(),
-                getUserSession().getSessionId()
+                getSession
         );
 
         commandQueue.addCommand(getLocation);
+        commandQueue.addCommand(getSession);
         commandQueue.addCommand(locationLog);
 
         return commandQueue;

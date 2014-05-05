@@ -2,6 +2,7 @@ package com.craftaga.agabacbone.session;
 
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
 import com.craftaga.agabacbone.persistence.IPersistenceManager;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.springframework.core.task.TaskExecutor;
@@ -53,4 +54,6 @@ public interface IUserSession extends ICommandQueueScheduler {
     int getUsernameId();
 
     UUID getUserId();
+
+    void changeWorld(World world);
 }
