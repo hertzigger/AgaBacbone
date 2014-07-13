@@ -1,1 +1,1 @@
-SELECT idWorld FROM agabacbone.World WHERE name=? AND idServer=?;
+SELECT idWorld FROM AgaBacbone.world WHERE name=? AND idServer=?;

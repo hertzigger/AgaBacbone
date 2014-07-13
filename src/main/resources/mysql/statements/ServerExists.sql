@@ -1,1 +1,1 @@
-select * from agabacbone.server WHERE name=?;
+select * from AgaBacbone.server WHERE name=?;

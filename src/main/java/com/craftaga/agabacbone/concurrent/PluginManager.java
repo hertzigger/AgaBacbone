@@ -8,6 +8,8 @@ import com.craftaga.agabacbone.concurrent.methods.TimerAddMethod;
 import com.craftaga.agabacbone.concurrent.methods.TimerMethod;
 import com.craftaga.agabacbone.listener.LoggingEventListener;
 import com.craftaga.agabacbone.listener.WorldListener;
+import com.craftaga.agabacbone.persistence.DatabaseSetupManager;
+import com.craftaga.agabacbone.persistence.IDatabaseSetupManager;
 import com.craftaga.agabacbone.persistence.IPersistenceManager;
 import com.craftaga.agabacbone.persistence.MysqlPersistence;
 import com.craftaga.agabacbone.persistence.entities.IServerPersistence;
@@ -49,6 +51,7 @@ import java.sql.SQLException;
  */
 @Service
 public class PluginManager implements IPluginManager {
+
     private JavaPlugin plugin;
     final private ISessionHandler sessionHandler = new SessionHandler();
     final private ITimerManager timerManager = new TimerManager();
@@ -73,24 +76,11 @@ public class PluginManager implements IPluginManager {
             context = new ClassPathXmlApplicationContext(new String[]{"hibernate-beans.xml"}, false);
             context.setClassLoader(cl);
             context.refresh();
-            boolean databaseReady = true;
             dataSource = (BoneCPDataSource) context.getBean("mainDataSource");
             dataSource.setPassword(plugin.getConfig().getConfigurationSection("database").getString("password"));
             dataSource.setUsername(plugin.getConfig().getConfigurationSection("database").getString("username"));
-            if(!plugin.getConfig().getConfigurationSection("database").getBoolean("created")) {
-                ClassLoader loader = Thread.currentThread().getContextClassLoader();
-                URL setupUrl = loader.getResource("setup.sql");
-                try {
-                    dataSource.getConnection().prepareStatement(IOUtils.toString(plugin.getResource("setup.sql"), "UTF-8"));
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    databaseReady = false;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    databaseReady = false;
-                }
-            }
-            if (databaseReady) {
+            IDatabaseSetupManager databaseSetupManager = new DatabaseSetupManager(plugin.getConfig(), dataSource, this.getPlugin());
+            if(databaseSetupManager.CheckAndSetup()) {
                 persistenceManager = new PersistenceManager();
                 persistenceManager.setDataSource(dataSource);
                 persistenceManager.setPlugin(this);
@@ -122,9 +112,7 @@ public class PluginManager implements IPluginManager {
                 timerMethod.addMethod(timerAddMethod);
                 sessionHandler.getCommandHandler().addMethod(timerMethod);
                 sessionHandler.scheduleTimerHandlerAtFixedRate(new ScheduledTimerHandler(new LocationLoggerTimer(context), 5000));
-            }
-            else
-            {
+            } else {
                 getPlugin().getLogger().info("Database initialisation failed. AgaBacbone Not running");
             }
         }

@@ -1,1 +1,1 @@
-SELECT uuid FROM agabacbone.user WHERE uuid=?;
+SELECT uuid FROM AgaBacbone.user WHERE uuid=?;

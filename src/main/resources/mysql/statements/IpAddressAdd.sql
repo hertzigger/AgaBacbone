@@ -1,1 +1,1 @@
-INSERT INTO agabacbone.ipAddress (address, created, modified) VALUES (?, ?, ?);
+INSERT INTO AgaBacbone.ipAddress (address, created, modified) VALUES (?, ?, ?);

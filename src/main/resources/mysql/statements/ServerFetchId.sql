@@ -1,1 +1,1 @@
-select idServer from agabacbone.server WHERE name=?;
+select idServer from AgaBacbone.server WHERE name=?;

@@ -1,4 +1,4 @@
 SELECT
   idIpAddress
-FROM agabacbone.ipAddress
+FROM AgaBacbone.ipAddress
 WHERE address = ?;

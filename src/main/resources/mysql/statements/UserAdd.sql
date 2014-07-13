@@ -1,1 +1,1 @@
-INSERT INTO agabacbone.user (uuid, created, modified, firstLogin) VALUES (?,?,?,?);
+INSERT INTO AgaBacbone.user (uuid, created, modified, firstLogin) VALUES (?,?,?,?);

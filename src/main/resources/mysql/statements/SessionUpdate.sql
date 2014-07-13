@@ -1,3 +1,3 @@
-UPDATE agabacbone.session
+UPDATE AgaBacbone.session
 SET logout = ?, modified = ?
 WHERE idSession = ?;

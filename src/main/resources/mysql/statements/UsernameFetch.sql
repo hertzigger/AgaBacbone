@@ -1,4 +1,4 @@
 SELECT
   idUsername
-FROM agabacbone.username
+FROM AgaBacbone.username
 WHERE username = ? AND uuid = ?;

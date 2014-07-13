@@ -4,7 +4,7 @@
   <groupId>com.craftaga</groupId>
   <artifactId>AgaBacbone</artifactId>
   <name>AgaBacbone</name>
-  <version>0.1.4-SNAPSHOT</version>
+  <version>0.1.5-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
   <build>
     <sourceDirectory>${basedir}/src/main/java</sourceDirectory>

@@ -1,1 +1,1 @@
-INSERT INTO agabacbone.server (idServer, name, created, modified) VALUES (null,?,?,?);
+INSERT INTO AgaBacbone.server (idServer, name, created, modified) VALUES (null,?,?,?);
