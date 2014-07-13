@@ -7,6 +7,7 @@ import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPDataSource;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.Date;
@@ -21,23 +22,16 @@ import java.sql.Statement;
  * @author Jonathan
  * @since 03/05/14
  */
-public class IpAddressPersistence extends MysqlPersistence implements IIpAddressPersistence {
-
-    public static final String IP_ADDRESS_EXISTS = "select idIpAddress from ipAddress WHERE address=?";
-    public static final String ADD_IP_ADDRESS = "insert into ipAddress (address, created, modified) VALUES (?,?,?)";
-
-    public IpAddressPersistence(BoneCPDataSource dataSource) {
-        super(dataSource);
-    }
+public class IpAddressPersistence extends MysqlPersistence<IpAddressPersistence> implements IIpAddressPersistence {
 
     @Override
-    public void addIpAddress(String ipAddress) throws SQLException {
+    public void addIpAddress(String ipAddress) throws SQLException, IOException {
         PreparedStatement insert = null;
         Connection connection = null;
         try {
             connection = getDataSource().getConnection();
             connection.setAutoCommit(false);
-            insert = connection.prepareStatement(IP_ADDRESS_EXISTS);
+            insert = connection.prepareStatement(getStatement("IpAddressExists"));
             insert.setString(1, ipAddress);
             insert.setDate(2, new Date(new java.util.Date().getTime()));
             insert.setDate(3, new Date(new java.util.Date().getTime()));
@@ -56,14 +50,14 @@ public class IpAddressPersistence extends MysqlPersistence implements IIpAddress
     }
 
     @Override
-    public int fetchIpAddressId(InetAddress ipAddress) throws SQLException
+    public int fetchIpAddressId(InetAddress ipAddress) throws SQLException, IOException
     {
         PreparedStatement statement = null;
         Connection connection = null;
         try {
             connection = getDataSource().getConnection();
             connection.setAutoCommit(false);
-            statement = connection.prepareStatement(IP_ADDRESS_EXISTS);
+            statement = connection.prepareStatement(getStatement("IpAddressExists"));
             statement.setString(1, ipAddress.getHostAddress());
             ResultSet resultSet = statement.executeQuery();
             connection.commit();
@@ -85,7 +79,7 @@ public class IpAddressPersistence extends MysqlPersistence implements IIpAddress
     }
 
     @Override
-    public int addOrFetch(InetAddress address) throws SQLException {
+    public int addOrFetch(InetAddress address) throws SQLException, IOException {
         PreparedStatement statement = null;
         Connection connection = null;
         try {
@@ -93,7 +87,7 @@ public class IpAddressPersistence extends MysqlPersistence implements IIpAddress
             connection.setAutoCommit(false);
             int ipId = fetchIpAddressId(address);
             if (ipId == 0) {
-                statement = connection.prepareStatement(ADD_IP_ADDRESS, Statement.RETURN_GENERATED_KEYS);
+                statement = connection.prepareStatement(getStatement("IpAddressAdd"), Statement.RETURN_GENERATED_KEYS);
                 statement.setString(1, address.getHostAddress());
                 statement = setModifiedAndCreated(statement, 2, 3);
                 statement.executeUpdate();
@@ -114,5 +108,10 @@ public class IpAddressPersistence extends MysqlPersistence implements IIpAddress
                 connection.close();
             }
         }
+    }
+
+    @Override
+    protected IpAddressPersistence getThis() {
+        return this;
     }
 }

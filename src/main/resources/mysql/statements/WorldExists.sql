@@ -1,0 +1,1 @@
+SELECT idWorld FROM agabacbone.World WHERE name=? AND idServer=?;

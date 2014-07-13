@@ -5,6 +5,7 @@ import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPDataSource;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,25 +21,17 @@ import java.util.UUID;
  * @author Jonathan
  * @since 03/05/14
  */
-public class UserPersistence extends MysqlPersistence implements IUserPersistence {
-    public static final String ADD_USER = "INSERT INTO user (uuid, created, modified, firstLogin)" +
-            " VALUES (?,?,?,?)";
-    public static final String FETCH_USER = "SELECT uuid FROM user WHERE uuid=?";
-    public static final String LOGOUT = "UPDATE user SET lastLogout=?, modified=? WHERE uuid=?";
-
-    public UserPersistence(BoneCPDataSource dataSource) {
-        super(dataSource);
-    }
+public class UserPersistence extends MysqlPersistence<UserPersistence> implements IUserPersistence {
 
     @Override
-    public UUID fetchUser(UUID uuid) throws SQLException
+    public UUID fetchUser(UUID uuid) throws SQLException, IOException
     {
         PreparedStatement statement = null;
         Connection connection = null;
         try {
             connection = getDataSource().getConnection();
             connection.setAutoCommit(false);
-            statement = connection.prepareStatement(FETCH_USER);
+            statement = connection.prepareStatement(getStatement("UserFetch"));
             statement.setString(1, uuid.toString());
             ResultSet resultSet = statement.executeQuery();
             connection.commit();
@@ -59,7 +52,7 @@ public class UserPersistence extends MysqlPersistence implements IUserPersistenc
     }
 
     @Override
-    public UUID login(UUID uniqueId) throws SQLException {
+    public UUID login(UUID uniqueId) throws SQLException, IOException {
         PreparedStatement statement = null;
         Connection connection = null;
         UUID returnUuid = null;
@@ -68,18 +61,14 @@ public class UserPersistence extends MysqlPersistence implements IUserPersistenc
             connection.setAutoCommit(false);
             returnUuid = fetchUser(uniqueId);
             if (returnUuid == null) {
-                statement = connection.prepareStatement(ADD_USER, Statement.RETURN_GENERATED_KEYS);
+                statement = connection.prepareStatement(getStatement("UserAdd"), Statement.RETURN_GENERATED_KEYS);
                 statement.setString(1, uniqueId.toString());
                 statement = setModifiedAndCreated(statement, 2, 3);
                 statement.setTimestamp(4, new Timestamp(new Date().getTime()));
                 statement.executeUpdate();
-                ResultSet rs = statement.getGeneratedKeys();
-                if (rs.next()) {
-                    returnUuid = UUID.fromString(rs.getString(1));
-                }
             }
             connection.commit();
-            return returnUuid;
+            return fetchUser(uniqueId);
         } catch (SQLException e) {
             throw e;
         } finally {
@@ -93,13 +82,13 @@ public class UserPersistence extends MysqlPersistence implements IUserPersistenc
     }
 
     @Override
-    public void setLogout(UUID userId) throws SQLException {
+    public void setLogout(UUID userId) throws SQLException, IOException {
         PreparedStatement statement = null;
         Connection connection = null;
         try {
             connection = getDataSource().getConnection();
             connection.setAutoCommit(false);
-            statement = connection.prepareStatement(LOGOUT, Statement.RETURN_GENERATED_KEYS);
+            statement = connection.prepareStatement(getStatement("UserLogout"), Statement.RETURN_GENERATED_KEYS);
             Timestamp time = new Timestamp(new Date().getTime());
             statement.setTimestamp(1, time);
             statement.setTimestamp(2, time);
@@ -116,5 +105,10 @@ public class UserPersistence extends MysqlPersistence implements IUserPersistenc
                 connection.close();
             }
         }
+    }
+
+    @Override
+    protected UserPersistence getThis() {
+        return this;
     }
 }

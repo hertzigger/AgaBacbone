@@ -8,6 +8,7 @@ import com.craftaga.agabacbone.persistence.IPersistenceManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.UUID;
 
@@ -60,4 +61,6 @@ public interface ISessionHandler extends ICommandQueueScheduler {
     void setWorldManager(IWorldManager worldManager);
 
     IWorldManager getWorldManager();
+
+    void setContext(ClassPathXmlApplicationContext context);
 }

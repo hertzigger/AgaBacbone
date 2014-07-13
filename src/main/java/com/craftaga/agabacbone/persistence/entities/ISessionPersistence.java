@@ -1,5 +1,8 @@
 package com.craftaga.agabacbone.persistence.entities;
 
+import com.craftaga.agabacbone.persistence.IMysqlPersistence;
+
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 
@@ -9,8 +12,8 @@ import java.util.Date;
  * @author Jonathan
  * @since 03/05/14
  */
-public interface ISessionPersistence {
-    int addSession(Date date, int worldId) throws SQLException;
+public interface ISessionPersistence extends IMysqlPersistence {
+    int addSession(Date date, int worldId) throws SQLException, IOException;
 
-    void logout(int sessionId) throws SQLException;
+    void logout(int sessionId) throws SQLException, IOException;
 }

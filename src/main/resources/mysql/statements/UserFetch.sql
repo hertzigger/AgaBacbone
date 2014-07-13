@@ -1,0 +1,1 @@
+SELECT uuid FROM agabacbone.user WHERE uuid=?;

@@ -10,7 +10,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author Jonathan
  * @since 09/04/14
  */
-public interface ITimerHandler extends Runnable {
+public interface IPlayerQueueConstructor extends Runnable {
 
     IUserSession getUserSession();
 

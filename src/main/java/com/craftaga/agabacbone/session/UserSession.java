@@ -1,6 +1,8 @@
 package com.craftaga.agabacbone.session;
 
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
+import com.craftaga.agabacbone.concurrent.IPlayerQueueConstructor;
+import com.craftaga.agabacbone.concurrent.handlers.session.CreateSnapshotHandler;
 import com.craftaga.agabacbone.persistence.IPersistenceManager;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.World;
@@ -9,6 +11,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,6 +38,18 @@ public class UserSession implements IUserSession {
     private int sessionId;
     private int usernameId;
     private UUID userId;
+
+    private ClassPathXmlApplicationContext context;
+
+    @Override
+    public ClassPathXmlApplicationContext getContext() {
+        return context;
+    }
+
+    @Override
+    public void setContext(ClassPathXmlApplicationContext context) {
+        this.context = context;
+    }
 
     @Override
     public TaskExecutor getTaskExecutor() {
@@ -64,6 +79,8 @@ public class UserSession implements IUserSession {
             persistenceManager.getUsernamePersistence().setLogout(getUsernameId());
         } catch (SQLException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            getSessionHandler().getPluginManager().getPlugin().getLogger().info(ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -91,6 +108,8 @@ public class UserSession implements IUserSession {
             persistenceManager.getUsernameHasSessionPersistence().add(usernameId, sessionId);
         } catch (SQLException e) {
              getSessionHandler().getPluginManager().getPlugin().getLogger().info(ExceptionUtils.getStackTrace(e));
+        } catch (IOException e) {
+            getSessionHandler().getPluginManager().getPlugin().getLogger().info(ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -197,6 +216,17 @@ public class UserSession implements IUserSession {
             persistenceManager.getUsernameHasSessionPersistence().add(getUsernameId(), getSessionId());
         } catch (SQLException e) {
             getSessionHandler().getPluginManager().getPlugin().getLogger().info(ExceptionUtils.getStackTrace(e));
+        } catch (IOException e) {
+            getSessionHandler().getPluginManager().getPlugin().getLogger().info(ExceptionUtils.getStackTrace(e));
         }
+    }
+
+    @Override
+    public int createSnapshot()
+    {
+        IPlayerQueueConstructor playerQueueConstructor = new CreateSnapshotHandler(getContext(), this);
+        playerQueueConstructor.setUserSession(this);
+        executeQueue(playerQueueConstructor.getCommandQueue());
+        return 0;
     }
 }

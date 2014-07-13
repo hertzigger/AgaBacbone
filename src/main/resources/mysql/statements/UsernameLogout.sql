@@ -1,0 +1,1 @@
+UPDATE agabacbone.username SET lastLogout=?, modified=? WHERE idUsername=?;

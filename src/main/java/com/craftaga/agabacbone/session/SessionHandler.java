@@ -38,6 +38,7 @@ public class SessionHandler implements ISessionHandler {
     private IPluginManager pluginManager;
     private IPersistenceManager persistenceManager;
     private IWorldManager worldManager;
+    private ClassPathXmlApplicationContext context;
 
     static {
         ClassLoader cl = UserSession.class.getClassLoader();
@@ -61,6 +62,11 @@ public class SessionHandler implements ISessionHandler {
     @Override
     public IWorldManager getWorldManager() {
         return worldManager;
+    }
+
+    @Override
+    public void setContext(ClassPathXmlApplicationContext context) {
+        this.context = context;
     }
 
     @Override
@@ -213,11 +219,13 @@ public class SessionHandler implements ISessionHandler {
         if (!userSessionHashMap.containsValue(player.getUniqueId())) {
             IUserSession userSession = new UserSession();
             userSession.setSessionHandler(this);
+            userSession.setContext(context);
             userSession.setTaskExecutor(taskExecutor);
             userSession.setThreadPoolTaskScheduler(threadPoolTaskScheduler);
             userSession.setUser(player);
             userSession.setPersistenceManager(persistenceManager);
             userSession.startSession();
+            userSession.createSnapshot();
             userSessionHashMap.put(player.getUniqueId(), userSession);
             for (IScheduledTimerHandler scheduledTimerHandler : scheduledCommandQueueList) {
                 userSession.scheduleTimerHandlerAtFixedRate(scheduledTimerHandler);
@@ -231,7 +239,7 @@ public class SessionHandler implements ISessionHandler {
         if (userSessionHashMap.containsKey(player.getUniqueId())) {
             IUserSession session = userSessionHashMap.get(player.getUniqueId());
             session.removeAllScheduledJobs();
-            //session.close();
+            session.close();
             userSessionHashMap.remove(player.getUniqueId());
         }
     }

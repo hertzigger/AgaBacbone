@@ -5,6 +5,7 @@ import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPDataSource;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,13 +21,7 @@ import java.util.UUID;
  * @author Jonathan
  * @since 04/05/14
  */
-public class LocationPersistence extends MysqlPersistence implements ILocationPersistence {
-    public static final String LOG_LOCATION = "INSERT INTO location (x, y, z, pitch, yaw, created, modified, idSession)" +
-            "VALUES (?,?,?,?,?,?,?,?)";
-
-    public LocationPersistence(BoneCPDataSource dataSource) {
-        super(dataSource);
-    }
+public class LocationPersistence extends MysqlPersistence<LocationPersistence> implements ILocationPersistence {
 
     @Override
     public int addLocation(
@@ -36,14 +31,14 @@ public class LocationPersistence extends MysqlPersistence implements ILocationPe
             final float pitch,
             final float yaw,
             final int sessionId
-    ) throws SQLException {
+    ) throws SQLException, IOException {
         PreparedStatement statement = null;
         Connection connection = null;
         int locationId = 0;
         try {
             connection = getDataSource().getConnection();
             connection.setAutoCommit(false);
-            statement = connection.prepareStatement(LOG_LOCATION, Statement.RETURN_GENERATED_KEYS);
+            statement = connection.prepareStatement(getStatement("LocationAdd"), Statement.RETURN_GENERATED_KEYS);
             statement.setDouble(1, x);
             statement.setDouble(2, y);
             statement.setDouble(3, z);
@@ -68,5 +63,10 @@ public class LocationPersistence extends MysqlPersistence implements ILocationPe
                 connection.close();
             }
         }
+    }
+
+    @Override
+    protected LocationPersistence getThis() {
+        return this;
     }
 }

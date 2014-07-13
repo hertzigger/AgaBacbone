@@ -1,18 +1,14 @@
 package com.craftaga.agabacbone.concurrent.handlers.instruction;
 
-import com.craftaga.agabacbone.PlayerNameResolver;
 import com.craftaga.agabacbone.commands.SendMessageToPlayerCommand;
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
 import com.craftaga.agabacbone.concurrent.IParameterBag;
-import com.craftaga.agabacbone.concurrent.ITimerHandler;
+import com.craftaga.agabacbone.concurrent.IPlayerQueueConstructor;
 import com.craftaga.agabacbone.concurrent.ITimerManager;
 import com.craftaga.agabacbone.concurrent.InstructionHandler;
 import com.craftaga.agabacbone.concurrent.Parameter;
 import com.craftaga.agabacbone.concurrent.ParameterBag;
-import com.craftaga.agabacbone.concurrent.TimerManager;
 import com.craftaga.agabacbone.session.ICommandQueueScheduler;
-import com.craftaga.agabacbone.session.IUserSession;
-import com.craftaga.agabacbone.session.ScheduledCommandQueue;
 import com.craftaga.agabacbone.session.ScheduledTimerHandler;
 import org.bukkit.ChatColor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -112,7 +108,7 @@ public class TimerAddInstructionHandler extends InstructionHandler {
             msg.append("/n" + stringContext.getMessage("instruction.timer.add.usage1", null, Locale.ENGLISH));
             msg.append("/n" + stringContext.getMessage("instruction.timer.add.usage2", null, Locale.ENGLISH));
         } else {
-            ITimerHandler timerHandler =
+            IPlayerQueueConstructor timerHandler =
                     getUserSession().
                     getSessionHandler().
                     getPluginManager().

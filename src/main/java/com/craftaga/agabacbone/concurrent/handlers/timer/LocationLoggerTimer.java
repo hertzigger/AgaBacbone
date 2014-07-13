@@ -4,9 +4,9 @@ import com.craftaga.agabacbone.commands.Command;
 import com.craftaga.agabacbone.commands.GetPlayersCurrentPosition;
 import com.craftaga.agabacbone.commands.GetSessionId;
 import com.craftaga.agabacbone.commands.IValueHolderCommand;
-import com.craftaga.agabacbone.commands.LogLocationCommand;
+import com.craftaga.agabacbone.commands.persistance.LogLocationCommand;
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
-import com.craftaga.agabacbone.concurrent.TimerHandler;
+import com.craftaga.agabacbone.concurrent.PlayerQueueConstructor;
 import org.bukkit.Location;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -16,7 +16,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author Jonathan
  * @since 04/05/14
  */
-public class LocationLoggerTimer extends TimerHandler {
+public class LocationLoggerTimer extends PlayerQueueConstructor {
 
     public LocationLoggerTimer(ClassPathXmlApplicationContext context) {
         super(context);
@@ -25,8 +25,6 @@ public class LocationLoggerTimer extends TimerHandler {
     @Override
     public CommandQueue getCommandQueue() {
         CommandQueue commandQueue = new CommandQueue(getUserSession().getSessionHandler().getPluginManager());
-
-        Location pl = getUserSession().getUser().getLocation();
 
         IValueHolderCommand<Integer> getSession = new GetSessionId(
                 commandQueue,

@@ -1,6 +1,6 @@
 package com.craftaga.agabacbone.session;
 
-import com.craftaga.agabacbone.concurrent.ITimerHandler;
+import com.craftaga.agabacbone.concurrent.IPlayerQueueConstructor;
 
 /**
  * description
@@ -9,9 +9,9 @@ import com.craftaga.agabacbone.concurrent.ITimerHandler;
  * @since 10/04/14
  */
 public interface IScheduledTimerHandler {
-    ITimerHandler getTimerHandler();
+    IPlayerQueueConstructor getTimerHandler();
 
-    void setTimerHandler(ITimerHandler timerHandler);
+    void setTimerHandler(IPlayerQueueConstructor timerHandler);
 
     long getInterval();
 

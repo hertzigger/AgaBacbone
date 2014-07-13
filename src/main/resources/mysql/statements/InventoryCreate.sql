@@ -1,0 +1,1 @@
+INSERT INTO agabacbone.inventory (created) VALUES (?);

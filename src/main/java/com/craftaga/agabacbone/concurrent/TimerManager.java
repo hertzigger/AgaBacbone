@@ -1,8 +1,6 @@
 package com.craftaga.agabacbone.concurrent;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -12,22 +10,22 @@ import java.util.Set;
  * @since 09/04/14
  */
 public class TimerManager implements ITimerManager {
-    private HashMap<String, ITimerHandler> timerHandlerHashMap;
+    private HashMap<String, IPlayerQueueConstructor> timerHandlerHashMap;
 
     public TimerManager()
     {
-        timerHandlerHashMap = new HashMap<String, ITimerHandler>();
+        timerHandlerHashMap = new HashMap<String, IPlayerQueueConstructor>();
     }
 
     @Override
-    public TimerManager addTimerHandler(String name, ITimerHandler timerHandler)
+    public TimerManager addTimerHandler(String name, IPlayerQueueConstructor timerHandler)
     {
         timerHandlerHashMap.put(name, timerHandler);
         return this;
     }
 
     @Override
-    public ITimerHandler getTimerHandler(String name)
+    public IPlayerQueueConstructor getTimerHandler(String name)
     {
         return timerHandlerHashMap.get(name);
     }

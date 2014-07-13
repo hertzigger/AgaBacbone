@@ -1,5 +1,8 @@
 package com.craftaga.agabacbone.persistence.entities;
 
+import com.craftaga.agabacbone.persistence.IMysqlPersistence;
+
+import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.SQLException;
 
@@ -9,10 +12,10 @@ import java.sql.SQLException;
  * @author Jonathan
  * @since 03/05/14
  */
-public interface IIpAddressPersistence {
-    int addOrFetch(InetAddress address) throws SQLException;
+public interface IIpAddressPersistence extends IMysqlPersistence {
+    int addOrFetch(InetAddress address) throws SQLException, IOException;
 
-    void addIpAddress(String ipAddress) throws SQLException;
+    void addIpAddress(String ipAddress) throws SQLException, IOException;
 
-    int fetchIpAddressId(InetAddress ipAddress) throws SQLException;
+    int fetchIpAddressId(InetAddress ipAddress) throws SQLException, IOException;
 }

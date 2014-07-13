@@ -5,6 +5,7 @@ import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPDataSource;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,26 +21,17 @@ import java.util.UUID;
  * @author Jonathan
  * @since 04/05/14
  */
-public class UsernamePersistence extends MysqlPersistence implements IUsernamePersistence {
-    public static final String FETCH_USERNAME = "SELECT idUsername FROM username WHERE username=? AND uuid=?";
-    public static final String ADD_USERNAME = "INSERT INTO username (username, created, modified, firstLogin, uuid)" +
-            " VALUES (?,?,?,?,?)";
-    public static final String LOGOUT = "UPDATE username SET lastLogout=?, modified=? WHERE idUsername=?";
-
-
-    public UsernamePersistence(BoneCPDataSource dataSource) {
-        super(dataSource);
-    }
+public class UsernamePersistence extends MysqlPersistence<UsernamePersistence> implements IUsernamePersistence {
 
     @Override
-    public int fetchUsername(final UUID userId, final String name) throws SQLException
+    public int fetchUsername(final UUID userId, final String name) throws SQLException, IOException
     {
         PreparedStatement statement = null;
         Connection connection = null;
         try {
             connection = getDataSource().getConnection();
             connection.setAutoCommit(false);
-            statement = connection.prepareStatement(FETCH_USERNAME);
+            statement = connection.prepareStatement(getStatement("UsernameFetch"));
             statement.setString(1, name);
             statement.setString(2, userId.toString());
             ResultSet resultSet = statement.executeQuery();
@@ -62,13 +54,13 @@ public class UsernamePersistence extends MysqlPersistence implements IUsernamePe
     }
 
     @Override
-    public void setLogout(int usernameId) throws SQLException {
+    public void setLogout(int usernameId) throws SQLException, IOException {
         PreparedStatement statement = null;
         Connection connection = null;
         try {
             connection = getDataSource().getConnection();
             connection.setAutoCommit(false);
-            statement = connection.prepareStatement(LOGOUT, Statement.RETURN_GENERATED_KEYS);
+            statement = connection.prepareStatement(getStatement("UsernameLogout"), Statement.RETURN_GENERATED_KEYS);
             Timestamp time = new Timestamp(new Date().getTime());
             statement.setTimestamp(1, time);
             statement.setTimestamp(2, time);
@@ -88,7 +80,7 @@ public class UsernamePersistence extends MysqlPersistence implements IUsernamePe
     }
 
     @Override
-    public int addOrFetch(final UUID userId, final String name) throws SQLException {
+    public int addOrFetch(final UUID userId, final String name) throws SQLException, IOException {
         PreparedStatement statement = null;
         Connection connection = null;
         try {
@@ -96,7 +88,7 @@ public class UsernamePersistence extends MysqlPersistence implements IUsernamePe
             connection.setAutoCommit(false);
             int usernameId = fetchUsername(userId, name);
             if (usernameId == 0) {
-                statement = connection.prepareStatement(ADD_USERNAME, Statement.RETURN_GENERATED_KEYS);
+                statement = connection.prepareStatement(getStatement("UsernameAdd"), Statement.RETURN_GENERATED_KEYS);
                 statement.setString(1, name);
                 statement = setModifiedAndCreated(statement, 2, 3);
                 statement.setTimestamp(4, new Timestamp(new Date().getTime()));
@@ -119,5 +111,10 @@ public class UsernamePersistence extends MysqlPersistence implements IUsernamePe
                 connection.close();
             }
         }
+    }
+
+    @Override
+    protected UsernamePersistence getThis() {
+        return this;
     }
 }

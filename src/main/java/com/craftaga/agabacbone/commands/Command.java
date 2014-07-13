@@ -15,7 +15,7 @@ public abstract class Command implements ICommand
 {
     protected CommandQueue defaultCommandQueue;
 
-    protected Command(final CommandQueue commandQueue)
+    public Command(final CommandQueue commandQueue)
     {
         this.defaultCommandQueue = commandQueue;
     }

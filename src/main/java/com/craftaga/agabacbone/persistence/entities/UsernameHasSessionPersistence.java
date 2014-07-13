@@ -17,14 +17,10 @@ import java.sql.Statement;
  * @author Jonathan
  * @since 04/05/14
  */
-public class UsernameHasSessionPersistence extends MysqlPersistence implements IUsernameHasSessionPersistence {
-    public static final String FETCH_ROW = "SELECT idUsername FROM usernameHasSession WHERE idUsername=? AND idSession=?";
-    public static final String ADD_ROW = "INSERT INTO usernameHasSession (idUsername, created, modified, idSession) " +
+public class UsernameHasSessionPersistence extends MysqlPersistence<UsernameHasSessionPersistence> implements IUsernameHasSessionPersistence {
+    public static final String FETCH_ROW = "SELECT idUsername FROM agabacbone.usernameHasSession WHERE idUsername=? AND idSession=?";
+    public static final String ADD_ROW = "INSERT INTO agabacbone.usernameHasSession (idUsername, created, modified, idSession) " +
             " VALUES (?,?,?,?)";
-
-    public UsernameHasSessionPersistence(BoneCPDataSource dataSource) {
-        super(dataSource);
-    }
 
     @Override
     public boolean rowExists(final int usernameId, final int sessionId) throws SQLException {
@@ -80,5 +76,10 @@ public class UsernameHasSessionPersistence extends MysqlPersistence implements I
                 connection.close();
             }
         }
+    }
+
+    @Override
+    protected UsernameHasSessionPersistence getThis() {
+        return this;
     }
 }

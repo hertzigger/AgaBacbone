@@ -9,11 +9,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author Jonathan
  * @since 09/04/14
  */
-public abstract class TimerHandler implements ITimerHandler {
+public abstract class PlayerQueueConstructor implements IPlayerQueueConstructor {
     private IUserSession userSession;
     private ClassPathXmlApplicationContext context;
 
-    public TimerHandler(final ClassPathXmlApplicationContext context)
+    public PlayerQueueConstructor(final ClassPathXmlApplicationContext context)
     {
         this.context = context;
     }

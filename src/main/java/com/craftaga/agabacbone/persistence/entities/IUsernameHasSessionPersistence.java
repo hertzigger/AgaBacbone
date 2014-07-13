@@ -1,5 +1,7 @@
 package com.craftaga.agabacbone.persistence.entities;
 
+import com.craftaga.agabacbone.persistence.IMysqlPersistence;
+
 import java.sql.SQLException;
 
 /**
@@ -8,7 +10,7 @@ import java.sql.SQLException;
  * @author Jonathan
  * @since 04/05/14
  */
-public interface IUsernameHasSessionPersistence {
+public interface IUsernameHasSessionPersistence extends IMysqlPersistence {
     void add(final int usernameId, final int sessionId) throws SQLException;
 
     boolean rowExists(int usernameId, int sessionId) throws SQLException;

@@ -18,14 +18,9 @@ import java.util.UUID;
  * @author Jonathan
  * @since 04/05/14
  */
-public class UserHasIpAddressPersistence extends MysqlPersistence implements IUserHasIpAddressPersistence {
-    public static final String ROW_EXISTS = "SELECT idIpAddress, uuid FROM userHasIpAddress WHERE idIpAddress=? AND uuid=?";
-    public static final String ADD_LINK = "INSERT INTO userHasIpAddress (idIpAddress, created, modified, uuid) VALUES (?,?,?,?)";
-
-
-    public UserHasIpAddressPersistence(BoneCPDataSource dataSource) {
-        super(dataSource);
-    }
+public class UserHasIpAddressPersistence extends MysqlPersistence<UserHasIpAddressPersistence> implements IUserHasIpAddressPersistence {
+    public static final String ROW_EXISTS = "SELECT idIpAddress, uuid FROM agabacbone.userHasIpAddress WHERE idIpAddress=? AND uuid=?";
+    public static final String ADD_LINK = "INSERT INTO agabacbone.userHasIpAddress (idIpAddress, created, modified, uuid) VALUES (?,?,?,?)";
 
     @Override
     public Boolean rowExists(final int ipId, final UUID userId) throws SQLException {
@@ -91,5 +86,10 @@ public class UserHasIpAddressPersistence extends MysqlPersistence implements IUs
                 connection.close();
             }
         }
+    }
+
+    @Override
+    protected UserHasIpAddressPersistence getThis() {
+        return this;
     }
 }

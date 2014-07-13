@@ -5,6 +5,7 @@ import com.craftaga.agabacbone.persistence.IPersistenceManager;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
@@ -56,4 +57,10 @@ public interface IUserSession extends ICommandQueueScheduler {
     UUID getUserId();
 
     void changeWorld(World world);
+
+    int createSnapshot();
+
+    ClassPathXmlApplicationContext getContext();
+
+    void setContext(ClassPathXmlApplicationContext context);
 }

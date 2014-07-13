@@ -3,8 +3,10 @@ package com.craftaga.agabacbone.persistence.entities;
 import com.craftaga.agabacbone.persistence.MysqlPersistence;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPDataSource;
+import org.apache.commons.io.IOUtils;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -18,24 +20,16 @@ import java.sql.Timestamp;
  * @author Jonathan
  * @since 17/04/14
  */
-public class ServerPersistence extends MysqlPersistence implements IServerPersistence {
-
-    private static final String SERVER_EXISTS = "select * from Server WHERE name=?";
-    private static final String CREATE_SERVER = "insert into Server (idServer, name, created, modified) VALUES (null,?,?,?)";
-    private static final String SERVER_FETCH_ID = "select idServer from Server WHERE name=?";
-
-    public ServerPersistence(BoneCPDataSource dataSource) {
-        super(dataSource);
-    }
+public class ServerPersistence extends MysqlPersistence<ServerPersistence> implements IServerPersistence {
 
     @Override
-    public void createServer(String serverName) throws SQLException {
+    public void createServer(String serverName) throws SQLException, IOException {
         PreparedStatement insert = null;
         Connection connection = null;
         try {
             connection = getDataSource().getConnection();
             connection.setAutoCommit(false);
-            insert = connection.prepareStatement(CREATE_SERVER);
+            insert = connection.prepareStatement(getStatement("ServerCreate"));
             insert.setString(1, serverName);
             insert = setModifiedAndCreated(insert, 2, 3);
             insert.executeUpdate();
@@ -53,13 +47,13 @@ public class ServerPersistence extends MysqlPersistence implements IServerPersis
     }
 
     @Override
-    public Boolean serverExists(String serverName) throws SQLException {
+    public Boolean serverExists(String serverName) throws SQLException, IOException {
         PreparedStatement servers = null;
         Connection connection = null;
         try {
             connection = getDataSource().getConnection();
             connection.setAutoCommit(false);
-            servers = connection.prepareStatement(SERVER_EXISTS);
+            servers = connection.prepareStatement(getStatement("ServerExists"));
             servers.setString(1, serverName);
             ResultSet resultsSet = servers.executeQuery();
             connection.commit();
@@ -80,14 +74,15 @@ public class ServerPersistence extends MysqlPersistence implements IServerPersis
     }
 
     @Override
-    public int getServerId(String serverName) throws SQLException {
+    public int getServerId(String serverName) throws SQLException, IOException
+    {
         PreparedStatement server = null;
         Connection connection = null;
         int serverId = 0;
         try {
             connection = getDataSource().getConnection();
             connection.setAutoCommit(false);
-            server = connection.prepareStatement(SERVER_FETCH_ID);
+            server = connection.prepareStatement(getStatement("ServerExists"));
             server.setString(1, serverName);
             ResultSet resultSet = server.executeQuery();
             connection.commit();
@@ -95,7 +90,7 @@ public class ServerPersistence extends MysqlPersistence implements IServerPersis
                 serverId = resultSet.getInt("idServer");
             }
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            throw e;
         } finally {
             if (server != null) {
                 server.close();
@@ -105,5 +100,10 @@ public class ServerPersistence extends MysqlPersistence implements IServerPersis
             }
         }
         return serverId;
+    }
+
+    @Override
+    protected ServerPersistence getThis() {
+        return this;
     }
 }

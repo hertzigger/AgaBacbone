@@ -1,5 +1,8 @@
 package com.craftaga.agabacbone.persistence.entities;
 
+import com.craftaga.agabacbone.persistence.IMysqlPersistence;
+
+import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -8,6 +11,6 @@ import java.sql.SQLException;
  * @author Jonathan
  * @since 03/05/14
  */
-public interface ILocationPersistence {
-    int addLocation(double x, double y, double z, float pitch, float yaw, int sessionId) throws SQLException;
+public interface ILocationPersistence extends IMysqlPersistence {
+    int addLocation(double x, double y, double z, float pitch, float yaw, int sessionId) throws SQLException, IOException;
 }

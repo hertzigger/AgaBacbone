@@ -1,5 +1,7 @@
 package com.craftaga.agabacbone.concurrent;
 
+import com.craftaga.agabacbone.persistence.IMysqlPersistence;
+import com.craftaga.agabacbone.persistence.IPersistenceManager;
 import com.craftaga.agabacbone.session.ISessionHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,7 +14,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @since 06/04/14
  */
 public interface IPluginManager {
-    JavaPlugin getPlugin();
 
     void setPlugin(JavaPlugin plugin);
 
@@ -33,4 +34,8 @@ public interface IPluginManager {
     void setupListeners();
 
     void setupInstructions();
+
+    IPersistenceManager getPersistenceManager();
+
+    JavaPlugin getPlugin();
 }

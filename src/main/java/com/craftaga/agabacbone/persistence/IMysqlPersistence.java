@@ -1,9 +1,11 @@
 package com.craftaga.agabacbone.persistence;
 
+import com.craftaga.agabacbone.concurrent.PluginManager;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPDataSource;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 
 /**
  * description
@@ -13,4 +15,16 @@ import javax.sql.DataSource;
  */
 public interface IMysqlPersistence {
     BoneCPDataSource getDataSource();
+
+    String getDatabaseName();
+
+    MysqlPersistence setDatabaseName(String databaseName);
+
+    void setPlugin(PluginManager pluginManager);
+
+    PluginManager getPlugin();
+
+    String getStatement(String name) throws IOException;
+
+    MysqlPersistence setDataSource(BoneCPDataSource dataSource);
 }

@@ -2,7 +2,7 @@ package com.craftaga.agabacbone.concurrent.handlers.timer;
 
 import com.craftaga.agabacbone.commands.SendMessageToPlayerCommand;
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
-import com.craftaga.agabacbone.concurrent.TimerHandler;
+import com.craftaga.agabacbone.concurrent.PlayerQueueConstructor;
 import org.bukkit.ChatColor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -14,7 +14,7 @@ import java.util.Locale;
  * @author Jonathan
  * @since 09/04/14
  */
-public class ExampleTimerHandler extends TimerHandler {
+public class ExampleTimerHandler extends PlayerQueueConstructor {
 
     public ExampleTimerHandler(ClassPathXmlApplicationContext context) {
         super(context);

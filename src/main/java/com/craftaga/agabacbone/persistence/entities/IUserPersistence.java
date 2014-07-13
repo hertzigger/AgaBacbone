@@ -1,5 +1,8 @@
 package com.craftaga.agabacbone.persistence.entities;
 
+import com.craftaga.agabacbone.persistence.IMysqlPersistence;
+
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.UUID;
@@ -10,11 +13,11 @@ import java.util.UUID;
  * @author Jonathan
  * @since 03/05/14
  */
-public interface IUserPersistence {
+public interface IUserPersistence extends IMysqlPersistence {
 
-    UUID fetchUser(UUID uuid) throws SQLException;
+    UUID fetchUser(UUID uuid) throws SQLException, IOException;
 
-    UUID login(UUID uniqueId) throws SQLException;
+    UUID login(UUID uniqueId) throws SQLException, IOException;
 
-    void setLogout(UUID userId) throws SQLException;
+    void setLogout(UUID userId) throws SQLException, IOException;
 }

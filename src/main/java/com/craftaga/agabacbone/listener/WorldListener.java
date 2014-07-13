@@ -19,7 +19,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public final class WorldListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerChangeWorldEvent(PlayerChangedWorldEvent playerChangedWorldEvent)
+    public void onPlayerChangeWorldEvent(final PlayerChangedWorldEvent playerChangedWorldEvent)
     {
         IPluginManager pluginManager = PluginManager.getInstance();
         IUserSession session = pluginManager.getSessionHandler().getUserSession(playerChangedWorldEvent.getPlayer());

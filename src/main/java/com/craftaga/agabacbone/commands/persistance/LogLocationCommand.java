@@ -1,9 +1,13 @@
-package com.craftaga.agabacbone.commands;
+package com.craftaga.agabacbone.commands.persistance;
 
+import com.craftaga.agabacbone.commands.Command;
+import com.craftaga.agabacbone.commands.IValueHolderCommand;
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
 import com.craftaga.agabacbone.persistence.entities.ILocationPersistence;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.Location;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -42,6 +46,8 @@ public class LogLocationCommand extends Command {
                     sessionId.getValue());
         } catch (SQLException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }  catch (IOException e) {
+            getDefaultCommandQueue().getPlugin().getPlugin().getLogger().info(ExceptionUtils.getStackTrace(e));
         }
     }
 }

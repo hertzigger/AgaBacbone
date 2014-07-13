@@ -9,9 +9,9 @@ import java.util.Set;
  * @since 09/04/14
  */
 public interface ITimerManager {
-    TimerManager addTimerHandler(String name, ITimerHandler timerHandler);
+    TimerManager addTimerHandler(String name, IPlayerQueueConstructor timerHandler);
 
-    ITimerHandler getTimerHandler(String name);
+    IPlayerQueueConstructor getTimerHandler(String name);
 
     Set<String> getTimerNameList();
 }

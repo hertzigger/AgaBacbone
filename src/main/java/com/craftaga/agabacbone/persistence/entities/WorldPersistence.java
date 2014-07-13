@@ -8,6 +8,7 @@ import com.jolbox.bonecp.BoneCPDataSource;
 import org.bukkit.World;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -23,18 +24,10 @@ import java.util.List;
  * @author Jonathan
  * @since 03/05/14
  */
-public class WorldPersistence extends MysqlPersistence implements IWorldPersistence {
-
-    public static final String CREATE_WORLD = "insert into world (name, created, modified, idServer)" +
-            " VALUES (?,?,?,?)";
-    public static final String WORLD_EXISTS = "select idWorld from World WHERE name=? AND idServer=?";
-
-    public WorldPersistence(BoneCPDataSource dataSource) {
-        super(dataSource);
-    }
+public class WorldPersistence extends MysqlPersistence<WorldPersistence> implements IWorldPersistence {
 
     @Override
-    public void addWorlds(List<org.bukkit.World> worlds, int serverId) throws SQLException {
+    public void addWorlds(List<org.bukkit.World> worlds, int serverId) throws SQLException, IOException {
         PreparedStatement insert = null;
         Connection connection = null;
         try {
@@ -42,7 +35,7 @@ public class WorldPersistence extends MysqlPersistence implements IWorldPersiste
             connection.setAutoCommit(false);
             for (org.bukkit.World world : worlds) {
                 if (fetchWorldId(world.getName(), serverId) != 0) {
-                    insert = connection.prepareStatement(CREATE_WORLD);
+                    insert = connection.prepareStatement(getStatement("WorldCreate"));
                     insert.setString(1, world.getName());
                     insert = setModifiedAndCreated(insert, 2, 3);
                     insert.setInt(4, serverId);
@@ -63,13 +56,13 @@ public class WorldPersistence extends MysqlPersistence implements IWorldPersiste
     }
 
     @Override
-    public int fetchWorldId(String worldName, int serverId) throws SQLException {
+    public int fetchWorldId(String worldName, int serverId) throws SQLException, IOException {
         PreparedStatement statement = null;
         Connection connection = null;
         try {
             connection = getDataSource().getConnection();
             connection.setAutoCommit(false);
-            statement = connection.prepareStatement(WORLD_EXISTS);
+            statement = connection.prepareStatement(getStatement("WorldExists"));
             statement.setString(1, worldName);
             statement.setInt(2, serverId);
             ResultSet resultSet = statement.executeQuery();
@@ -92,7 +85,7 @@ public class WorldPersistence extends MysqlPersistence implements IWorldPersiste
     }
 
     @Override
-    public IWorldManager addOrFetch(List<World> worlds, int serverId) throws SQLException {
+    public IWorldManager addOrFetch(List<World> worlds, int serverId) throws SQLException, IOException {
         PreparedStatement insert = null;
         Connection connection = null;
         IWorldManager worldManager = new WorldManager();
@@ -103,7 +96,7 @@ public class WorldPersistence extends MysqlPersistence implements IWorldPersiste
                 worldManager.addWorld(world, 0);
                 int worldId = fetchWorldId(world.getName(), serverId);
                 if (worldId == 0) {
-                    insert = connection.prepareStatement(CREATE_WORLD, Statement.RETURN_GENERATED_KEYS);
+                    insert = connection.prepareStatement(getStatement("WorldCreate"), Statement.RETURN_GENERATED_KEYS);
                     insert.setString(1, world.getName());
                     insert = setModifiedAndCreated(insert, 2, 3);
                     insert.setInt(4, serverId);
@@ -128,5 +121,10 @@ public class WorldPersistence extends MysqlPersistence implements IWorldPersiste
             }
         }
         return worldManager;
+    }
+
+    @Override
+    protected WorldPersistence getThis() {
+        return this;
     }
 }

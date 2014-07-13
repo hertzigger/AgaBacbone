@@ -1,5 +1,8 @@
 package com.craftaga.agabacbone.persistence.entities;
 
+import com.craftaga.agabacbone.persistence.IMysqlPersistence;
+
+import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -8,11 +11,11 @@ import java.sql.SQLException;
  * @author Jonathan
  * @since 17/04/14
  */
-public interface IServerPersistence {
+public interface IServerPersistence extends IMysqlPersistence {
 
-    void createServer(String serverName) throws SQLException;
+    void createServer(String serverName) throws SQLException, IOException;
 
-    Boolean serverExists(String serverName) throws SQLException;
+    Boolean serverExists(String serverName) throws SQLException, IOException;
 
-    int getServerId(String serverName) throws SQLException;
+    int getServerId(String serverName) throws SQLException, IOException;
 }
