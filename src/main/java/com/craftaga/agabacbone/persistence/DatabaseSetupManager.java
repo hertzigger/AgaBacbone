@@ -46,6 +46,7 @@ public class DatabaseSetupManager implements IDatabaseSetupManager {
                     ScriptRunner scriptRunner = new ScriptRunner(connection);
                     scriptRunner.setLogWriter(null);
                     scriptRunner.setErrorLogWriter(null);
+                    scriptRunner.setAutoCommit(true);
                     scriptRunner.runScript(new InputStreamReader(this.getClass().getResourceAsStream(STATEMENT_DIRECTORY + SETUP_SCRIPT_V1 + SQL_EXTENSION)));
                     configuration.set("database.version", "1");
                     plugin.saveConfig();

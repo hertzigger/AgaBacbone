@@ -8,11 +8,11 @@ import com.craftaga.agabacbone.concurrent.IPlayerQueueConstructor;
  * @author Jonathan
  * @since 10/04/14
  */
-public class ScheduledTimerHandler implements IScheduledTimerHandler {
+public class PlayerScheduledTimerHandler implements IPlayerScheduledTimerHandler {
     private IPlayerQueueConstructor timerHandler;
     private long interval;
 
-    public ScheduledTimerHandler(IPlayerQueueConstructor timerHandler, long interval) {
+    public PlayerScheduledTimerHandler(IPlayerQueueConstructor timerHandler, long interval) {
         this.timerHandler = timerHandler;
         this.interval = interval;
     }

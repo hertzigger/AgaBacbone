@@ -1,8 +1,5 @@
 package com.craftaga.agabacbone.session;
 
-import com.craftaga.agabacbone.IPlayerNameResolver;
-import com.craftaga.agabacbone.commands.queue.CommandQueue;
-
 /**
  * description
  *
@@ -11,9 +8,9 @@ import com.craftaga.agabacbone.commands.queue.CommandQueue;
  */
 public interface ICommandQueueScheduler {
 
-    void scheduleTimerHandlerAtFixedRate(IScheduledTimerHandler scheduledTimerHandler);
+    void scheduleTimerHandlerAtFixedRate(IPlayerScheduledTimerHandler scheduledTimerHandler);
 
-    void removeScheduledHandle(IScheduledTimerHandler scheduledTimerHandler);
+    void removeScheduledHandle(IPlayerScheduledTimerHandler scheduledTimerHandler);
 
     void removeAllScheduledJobs();
 

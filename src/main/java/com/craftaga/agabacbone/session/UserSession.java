@@ -32,7 +32,7 @@ public class UserSession implements IUserSession {
     private Player user;
     private ISessionHandler sessionHandler;
     private IPersistenceManager persistenceManager;
-    final private HashMap<IScheduledTimerHandler, ScheduledFuture> scheduledFutureHashMap = new HashMap<IScheduledTimerHandler, ScheduledFuture>();
+    final private HashMap<IPlayerScheduledTimerHandler, ScheduledFuture> scheduledFutureHashMap = new HashMap<IPlayerScheduledTimerHandler, ScheduledFuture>();
     final private ConcurrentHashMap<String, Object> states = new ConcurrentHashMap<String, Object>();
 
     private int sessionId;
@@ -140,7 +140,7 @@ public class UserSession implements IUserSession {
     }
 
     @Override
-    public void scheduleTimerHandlerAtFixedRate(IScheduledTimerHandler scheduledTimerHandler)
+    public void scheduleTimerHandlerAtFixedRate(IPlayerScheduledTimerHandler scheduledTimerHandler)
     {
         scheduledTimerHandler.getTimerHandler().setUserSession(this);
         scheduledFutureHashMap.put(scheduledTimerHandler,
@@ -151,7 +151,7 @@ public class UserSession implements IUserSession {
     }
 
     @Override
-    public void removeScheduledHandle(IScheduledTimerHandler scheduledTimerHandler)
+    public void removeScheduledHandle(IPlayerScheduledTimerHandler scheduledTimerHandler)
     {
         scheduledFutureHashMap.get(scheduledTimerHandler).cancel(false);
     }
@@ -159,7 +159,7 @@ public class UserSession implements IUserSession {
     @Override
     public void removeAllScheduledJobs()
     {
-        for (Map.Entry<IScheduledTimerHandler, ScheduledFuture> entry : scheduledFutureHashMap.entrySet()) {
+        for (Map.Entry<IPlayerScheduledTimerHandler, ScheduledFuture> entry : scheduledFutureHashMap.entrySet()) {
             entry.getValue().cancel(false);
         }
     }
@@ -181,7 +181,7 @@ public class UserSession implements IUserSession {
 
     public void immediatelyEndAllScheduledJobs()
     {
-        for (Map.Entry<IScheduledTimerHandler, ScheduledFuture> entry : scheduledFutureHashMap.entrySet()) {
+        for (Map.Entry<IPlayerScheduledTimerHandler, ScheduledFuture> entry : scheduledFutureHashMap.entrySet()) {
             entry.getValue().cancel(true);
         }
     }

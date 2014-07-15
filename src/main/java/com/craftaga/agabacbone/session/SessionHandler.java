@@ -30,7 +30,7 @@ public class SessionHandler implements ISessionHandler {
 
     final private IMethod commandHandler = new ParentMethod();
     final private ConcurrentHashMap<UUID, IUserSession> userSessionHashMap = new ConcurrentHashMap<>();
-    final private List<IScheduledTimerHandler> scheduledCommandQueueList = new ArrayList<IScheduledTimerHandler>();
+    final private List<IPlayerScheduledTimerHandler> scheduledCommandQueueList = new ArrayList<IPlayerScheduledTimerHandler>();
     private static final TaskExecutor taskExecutor;
     private static final ThreadPoolTaskScheduler threadPoolTaskScheduler;
     private IPlayerNameResolver playerNameResolver;
@@ -179,7 +179,7 @@ public class SessionHandler implements ISessionHandler {
     }
 
     @Override
-    public void scheduleTimerHandlerAtFixedRate(IScheduledTimerHandler scheduledTimerHandler) {
+    public void scheduleTimerHandlerAtFixedRate(IPlayerScheduledTimerHandler scheduledTimerHandler) {
         for (Map.Entry<UUID, IUserSession> entry : userSessionHashMap.entrySet()) {
             if ((entry.getValue().getUser() instanceof Player)) {
                 entry.getValue().scheduleTimerHandlerAtFixedRate(scheduledTimerHandler);
@@ -189,7 +189,7 @@ public class SessionHandler implements ISessionHandler {
     }
 
     @Override
-    public void removeScheduledHandle(IScheduledTimerHandler scheduledTimerHandler) {
+    public void removeScheduledHandle(IPlayerScheduledTimerHandler scheduledTimerHandler) {
         for (Map.Entry<UUID, IUserSession> entry : userSessionHashMap.entrySet()) {
             IUserSession session = entry.getValue();
             session.removeScheduledHandle(scheduledTimerHandler);
@@ -227,7 +227,7 @@ public class SessionHandler implements ISessionHandler {
             userSession.startSession();
             userSession.createSnapshot();
             userSessionHashMap.put(player.getUniqueId(), userSession);
-            for (IScheduledTimerHandler scheduledTimerHandler : scheduledCommandQueueList) {
+            for (IPlayerScheduledTimerHandler scheduledTimerHandler : scheduledCommandQueueList) {
                 userSession.scheduleTimerHandlerAtFixedRate(scheduledTimerHandler);
             }
         }
@@ -241,8 +241,8 @@ public class SessionHandler implements ISessionHandler {
             session.removeAllScheduledJobs();
             session.close();
             userSessionHashMap.remove(player.getUniqueId());
+            getPluginManager().getPlugin().getLogger().info("[" + session.getUser().getDisplayName() + "]["
+                    + session.getUser().getName() + "] Session unloaded");
         }
     }
-
-
 }

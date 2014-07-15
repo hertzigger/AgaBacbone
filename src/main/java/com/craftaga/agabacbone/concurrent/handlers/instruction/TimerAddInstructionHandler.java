@@ -9,7 +9,7 @@ import com.craftaga.agabacbone.concurrent.InstructionHandler;
 import com.craftaga.agabacbone.concurrent.Parameter;
 import com.craftaga.agabacbone.concurrent.ParameterBag;
 import com.craftaga.agabacbone.session.ICommandQueueScheduler;
-import com.craftaga.agabacbone.session.ScheduledTimerHandler;
+import com.craftaga.agabacbone.session.PlayerScheduledTimerHandler;
 import org.bukkit.ChatColor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -123,7 +123,7 @@ public class TimerAddInstructionHandler extends InstructionHandler {
                 session = getUserSession().getSessionHandler();
                 playerScope = "all players";
             }
-            session.scheduleTimerHandlerAtFixedRate(new ScheduledTimerHandler(timerHandler, interval));
+            session.scheduleTimerHandlerAtFixedRate(new PlayerScheduledTimerHandler(timerHandler, interval));
         }
 
         msg.append("Timer has been successfully schedules for " + playerScope);

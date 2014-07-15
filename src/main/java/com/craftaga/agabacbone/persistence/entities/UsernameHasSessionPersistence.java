@@ -18,8 +18,8 @@ import java.sql.Statement;
  * @since 04/05/14
  */
 public class UsernameHasSessionPersistence extends MysqlPersistence<UsernameHasSessionPersistence> implements IUsernameHasSessionPersistence {
-    public static final String FETCH_ROW = "SELECT idUsername FROM agabacbone.usernameHasSession WHERE idUsername=? AND idSession=?";
-    public static final String ADD_ROW = "INSERT INTO agabacbone.usernameHasSession (idUsername, created, modified, idSession) " +
+    public static final String FETCH_ROW = "SELECT idUsername FROM AgaBacbone.usernameHasSession WHERE idUsername=? AND idSession=?";
+    public static final String ADD_ROW = "INSERT INTO AgaBacbone.usernameHasSession (idUsername, created, modified, idSession) " +
             " VALUES (?,?,?,?)";
 
     @Override

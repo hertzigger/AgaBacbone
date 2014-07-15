@@ -1,6 +1,7 @@
 SELECT
   username.username,
-  server.name
+  server.name,
+  world.name
 FROM AgaBacbone.username
   JOIN AgaBacbone.usernameHasSession
     ON AgaBacbone.username.idUsername = AgaBacbone.usernameHasSession.idUsername

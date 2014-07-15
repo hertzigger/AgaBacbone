@@ -1,21 +1,15 @@
 package com.craftaga.agabacbone.concurrent;
 
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
-import com.craftaga.agabacbone.session.IUserSession;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * description
  *
  * @author Jonathan
- * @since 09/04/14
+ * @since 15/07/2014
  */
-public interface IPlayerQueueConstructor extends IQueueConstructor {
-
-    IUserSession getUserSession();
-
-    void setUserSession(IUserSession userSession);
-
+public interface IQueueConstructor extends Runnable {
     CommandQueue getCommandQueue();
 
     ClassPathXmlApplicationContext getContext();

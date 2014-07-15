@@ -8,7 +8,7 @@ import com.craftaga.agabacbone.concurrent.IPlayerQueueConstructor;
  * @author Jonathan
  * @since 10/04/14
  */
-public interface IScheduledTimerHandler {
+public interface IPlayerScheduledTimerHandler {
     IPlayerQueueConstructor getTimerHandler();
 
     void setTimerHandler(IPlayerQueueConstructor timerHandler);
