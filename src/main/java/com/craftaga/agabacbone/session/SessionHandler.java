@@ -2,6 +2,7 @@ package com.craftaga.agabacbone.session;
 
 import com.craftaga.agabacbone.IPlayerNameResolver;
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
+import com.craftaga.agabacbone.concurrent.schedule.IPlayerScheduledTimerHandler;
 import com.craftaga.agabacbone.concurrent.IPluginManager;
 import com.craftaga.agabacbone.concurrent.IMethod;
 import com.craftaga.agabacbone.concurrent.IWorldManager;
@@ -31,8 +32,9 @@ public class SessionHandler implements ISessionHandler {
     final private IMethod commandHandler = new ParentMethod();
     final private ConcurrentHashMap<UUID, IUserSession> userSessionHashMap = new ConcurrentHashMap<>();
     final private List<IPlayerScheduledTimerHandler> scheduledCommandQueueList = new ArrayList<IPlayerScheduledTimerHandler>();
-    private static final TaskExecutor taskExecutor;
-    private static final ThreadPoolTaskScheduler threadPoolTaskScheduler;
+    private TaskExecutor taskExecutor;
+    private ThreadPoolTaskScheduler threadPoolTaskScheduler;
+
     private IPlayerNameResolver playerNameResolver;
 
     private IPluginManager pluginManager;
@@ -40,13 +42,10 @@ public class SessionHandler implements ISessionHandler {
     private IWorldManager worldManager;
     private ClassPathXmlApplicationContext context;
 
-    static {
-        ClassLoader cl = UserSession.class.getClassLoader();
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(new String[]{"hibernate-beans.xml"}, false);
-        ctx.setClassLoader(cl);
-        ctx.refresh();
-        taskExecutor = (TaskExecutor) ctx.getBean("taskExecutor");
-        threadPoolTaskScheduler = (ThreadPoolTaskScheduler) ctx.getBean("threadPoolTaskScheduler");
+    public SessionHandler(TaskExecutor taskExecutor, ThreadPoolTaskScheduler threadPoolTaskScheduler)
+    {
+        this.taskExecutor = taskExecutor;
+        this.threadPoolTaskScheduler = threadPoolTaskScheduler;
     }
 
     @Override

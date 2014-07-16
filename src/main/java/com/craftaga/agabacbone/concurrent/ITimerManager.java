@@ -1,5 +1,7 @@
 package com.craftaga.agabacbone.concurrent;
 
+import com.craftaga.agabacbone.concurrent.schedule.IPlayerQueueConstructor;
+
 import java.util.Set;
 
 /**

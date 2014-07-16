@@ -2,7 +2,7 @@ package com.craftaga.agabacbone.concurrent.handlers.timer;
 
 import com.craftaga.agabacbone.commands.SendMessageToPlayerCommand;
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
-import com.craftaga.agabacbone.concurrent.PlayerQueueConstructor;
+import com.craftaga.agabacbone.commands.queue.PlayerQueueConstructor;
 import org.bukkit.ChatColor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

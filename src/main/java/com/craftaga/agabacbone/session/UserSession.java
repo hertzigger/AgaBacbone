@@ -1,7 +1,9 @@
 package com.craftaga.agabacbone.session;
 
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
-import com.craftaga.agabacbone.concurrent.IPlayerQueueConstructor;
+import com.craftaga.agabacbone.concurrent.schedule.IPlayerCommandQueueScheduler;
+import com.craftaga.agabacbone.concurrent.schedule.IPlayerQueueConstructor;
+import com.craftaga.agabacbone.concurrent.schedule.IPlayerScheduledTimerHandler;
 import com.craftaga.agabacbone.concurrent.handlers.session.CreateSnapshotHandler;
 import com.craftaga.agabacbone.persistence.IPersistenceManager;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -26,7 +28,7 @@ import java.util.concurrent.ScheduledFuture;
  * @author Jonathan
  * @since 25/03/14
  */
-public class UserSession implements IUserSession {
+public class UserSession implements IUserSession, IPlayerCommandQueueScheduler {
     private TaskExecutor taskExecutor;
     private ThreadPoolTaskScheduler threadPoolTaskScheduler;
     private Player user;

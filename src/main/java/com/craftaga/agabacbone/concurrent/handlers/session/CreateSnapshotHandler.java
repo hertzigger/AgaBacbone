@@ -3,7 +3,7 @@ package com.craftaga.agabacbone.concurrent.handlers.session;
 import com.craftaga.agabacbone.commands.IValueHolderCommand;
 import com.craftaga.agabacbone.commands.persistance.CreateInventory;
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
-import com.craftaga.agabacbone.concurrent.PlayerQueueConstructor;
+import com.craftaga.agabacbone.commands.queue.PlayerQueueConstructor;
 import com.craftaga.agabacbone.session.UserSession;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

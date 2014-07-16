@@ -1,6 +1,7 @@
 package com.craftaga.agabacbone.concurrent;
 
-import com.craftaga.agabacbone.persistence.IMysqlPersistence;
+import com.craftaga.agabacbone.commands.queue.CommandQueue;
+import com.craftaga.agabacbone.concurrent.schedule.IGlobalScheduledTimerHandle;
 import com.craftaga.agabacbone.persistence.IPersistenceManager;
 import com.craftaga.agabacbone.session.ISessionHandler;
 import org.bukkit.command.Command;
@@ -38,4 +39,10 @@ public interface IPluginManager {
     IPersistenceManager getPersistenceManager();
 
     JavaPlugin getPlugin();
+
+    void scheduleTimerHandlerAtFixedRate(IGlobalScheduledTimerHandle globalScheduledTimerHandle);
+
+    void removeScheduledHandle(IGlobalScheduledTimerHandle globalScheduledTimerHandle);
+
+    void executeQueue(CommandQueue commandQueue);
 }

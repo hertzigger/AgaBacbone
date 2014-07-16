@@ -1,6 +1,7 @@
 package com.craftaga.agabacbone.session;
 
 import com.craftaga.agabacbone.IPlayerNameResolver;
+import com.craftaga.agabacbone.concurrent.schedule.IPlayerCommandQueueScheduler;
 import com.craftaga.agabacbone.concurrent.IPluginManager;
 import com.craftaga.agabacbone.concurrent.IMethod;
 import com.craftaga.agabacbone.concurrent.IWorldManager;
@@ -10,15 +11,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.UUID;
-
 /**
  * description
  *
  * @author Jonathan
  * @since 25/03/14
  */
-public interface ISessionHandler extends ICommandQueueScheduler {
+public interface ISessionHandler extends IPlayerCommandQueueScheduler {
 
     IPluginManager getPluginManager();
 

@@ -1,13 +1,12 @@
-package com.craftaga.agabacbone.session;
+package com.craftaga.agabacbone.concurrent.schedule;
 
 /**
  * description
  *
  * @author Jonathan
- * @since 10/04/14
+ * @since 16/07/2014
  */
-public interface ICommandQueueScheduler {
-
+public interface IPlayerCommandQueueScheduler {
     void scheduleTimerHandlerAtFixedRate(IPlayerScheduledTimerHandler scheduledTimerHandler);
 
     void removeScheduledHandle(IPlayerScheduledTimerHandler scheduledTimerHandler);

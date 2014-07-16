@@ -1,4 +1,4 @@
-package com.craftaga.agabacbone.session;
+package com.craftaga.agabacbone.concurrent.schedule;
 
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
 
@@ -6,7 +6,7 @@ import com.craftaga.agabacbone.commands.queue.CommandQueue;
  * description
  *
  * @author Jonathan
- * @since 10/04/14
+ * @since 16/07/2014
  */
 public interface IScheduledCommandQueue {
     CommandQueue getCommandQueue();

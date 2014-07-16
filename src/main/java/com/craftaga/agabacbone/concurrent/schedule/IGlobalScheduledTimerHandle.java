@@ -1,4 +1,6 @@
-package com.craftaga.agabacbone.concurrent;
+package com.craftaga.agabacbone.concurrent.schedule;
+
+import com.craftaga.agabacbone.commands.queue.IQueueConstructor;
 
 /**
  * description

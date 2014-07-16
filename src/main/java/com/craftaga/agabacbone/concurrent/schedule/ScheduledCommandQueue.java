@@ -1,4 +1,4 @@
-package com.craftaga.agabacbone.session;
+package com.craftaga.agabacbone.concurrent.schedule;
 
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
 

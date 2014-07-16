@@ -1,9 +1,9 @@
 package com.craftaga.agabacbone.session;
 
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
+import com.craftaga.agabacbone.concurrent.schedule.IPlayerCommandQueueScheduler;
 import com.craftaga.agabacbone.persistence.IPersistenceManager;
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.task.TaskExecutor;
@@ -17,7 +17,7 @@ import java.util.UUID;
  * @author Jonathan
  * @since 25/03/14
  */
-public interface IUserSession extends ICommandQueueScheduler {
+public interface IUserSession extends IPlayerCommandQueueScheduler {
     Player getUser();
 
     void executeQueue(CommandQueue commandQueue);

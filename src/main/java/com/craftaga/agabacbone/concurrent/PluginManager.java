@@ -2,10 +2,13 @@ package com.craftaga.agabacbone.concurrent;
 
 import com.craftaga.agabacbone.IPlayerNameResolver;
 import com.craftaga.agabacbone.PlayerNameResolver;
+import com.craftaga.agabacbone.commands.queue.CommandQueue;
 import com.craftaga.agabacbone.concurrent.handlers.timer.ExampleTimerHandler;
 import com.craftaga.agabacbone.concurrent.handlers.timer.LocationLoggerTimer;
 import com.craftaga.agabacbone.concurrent.methods.TimerAddMethod;
 import com.craftaga.agabacbone.concurrent.methods.TimerMethod;
+import com.craftaga.agabacbone.concurrent.schedule.IGlobalScheduledTimerHandle;
+import com.craftaga.agabacbone.concurrent.schedule.PlayerScheduledTimerHandler;
 import com.craftaga.agabacbone.listener.LoggingEventListener;
 import com.craftaga.agabacbone.listener.WorldListener;
 import com.craftaga.agabacbone.persistence.DatabaseSetupManager;
@@ -17,7 +20,6 @@ import com.craftaga.agabacbone.persistence.PersistenceManager;
 import com.craftaga.agabacbone.persistence.entities.ServerPersistence;
 import com.craftaga.agabacbone.listener.LoginListener;
 import com.craftaga.agabacbone.session.ISessionHandler;
-import com.craftaga.agabacbone.session.PlayerScheduledTimerHandler;
 import com.craftaga.agabacbone.session.SessionHandler;
 import com.jolbox.bonecp.BoneCPDataSource;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -26,11 +28,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * description
@@ -42,10 +48,13 @@ import java.sql.SQLException;
 public class PluginManager implements IPluginManager {
 
     private JavaPlugin plugin;
-    final private ISessionHandler sessionHandler = new SessionHandler();
+    private ISessionHandler sessionHandler;
     final private ITimerManager timerManager = new TimerManager();
     final private IPlayerNameResolver playerNameResolver = new PlayerNameResolver();
     private IPersistenceManager persistenceManager;
+    private TaskExecutor taskExecutor;
+    private ThreadPoolTaskScheduler threadPoolTaskScheduler;
+    final private HashMap<IGlobalScheduledTimerHandle, ScheduledFuture> scheduledFutureHashMap = new HashMap<IGlobalScheduledTimerHandle, ScheduledFuture>();
 
 
     private IWorldManager worldManager = new WorldManager();
@@ -65,6 +74,10 @@ public class PluginManager implements IPluginManager {
             context = new ClassPathXmlApplicationContext(new String[]{"hibernate-beans.xml"}, false);
             context.setClassLoader(cl);
             context.refresh();
+            taskExecutor = (TaskExecutor) context.getBean("taskExecutor");
+            threadPoolTaskScheduler = (ThreadPoolTaskScheduler) context.getBean("threadPoolTaskScheduler");
+
+            this.sessionHandler = new SessionHandler(taskExecutor, threadPoolTaskScheduler);
             dataSource = (BoneCPDataSource) context.getBean("mainDataSource");
             dataSource.setPassword(plugin.getConfig().getConfigurationSection("database").getString("password"));
             dataSource.setUsername(plugin.getConfig().getConfigurationSection("database").getString("username"));
@@ -196,5 +209,26 @@ public class PluginManager implements IPluginManager {
     @Override
     public IPersistenceManager getPersistenceManager() {
         return persistenceManager;
+    }
+
+    @Override
+    public void scheduleTimerHandlerAtFixedRate(IGlobalScheduledTimerHandle globalScheduledTimerHandle) {
+        scheduledFutureHashMap.put(globalScheduledTimerHandle,
+                threadPoolTaskScheduler.scheduleAtFixedRate(
+                        globalScheduledTimerHandle.getTimerHandler().getCommandQueue(),
+                        globalScheduledTimerHandle.getInterval()
+                ));
+    }
+
+    @Override
+    public void removeScheduledHandle(IGlobalScheduledTimerHandle globalScheduledTimerHandle)
+    {
+        scheduledFutureHashMap.get(globalScheduledTimerHandle).cancel(false);
+    }
+
+    @Override
+    public void executeQueue(CommandQueue commandQueue)
+    {
+        taskExecutor.execute(commandQueue);
     }
 }

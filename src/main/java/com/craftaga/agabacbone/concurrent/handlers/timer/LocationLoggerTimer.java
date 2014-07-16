@@ -6,7 +6,7 @@ import com.craftaga.agabacbone.commands.GetSessionId;
 import com.craftaga.agabacbone.commands.IValueHolderCommand;
 import com.craftaga.agabacbone.commands.persistance.LogLocationCommand;
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
-import com.craftaga.agabacbone.concurrent.PlayerQueueConstructor;
+import com.craftaga.agabacbone.commands.queue.PlayerQueueConstructor;
 import org.bukkit.Location;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

@@ -1,12 +1,10 @@
-package com.craftaga.agabacbone.session;
-
-import com.craftaga.agabacbone.concurrent.IPlayerQueueConstructor;
+package com.craftaga.agabacbone.concurrent.schedule;
 
 /**
  * description
  *
  * @author Jonathan
- * @since 10/04/14
+ * @since 16/07/2014
  */
 public interface IPlayerScheduledTimerHandler {
     IPlayerQueueConstructor getTimerHandler();

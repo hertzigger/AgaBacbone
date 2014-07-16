@@ -1,5 +1,6 @@
-package com.craftaga.agabacbone.concurrent;
+package com.craftaga.agabacbone.commands.queue;
 
+import com.craftaga.agabacbone.concurrent.schedule.IPlayerQueueConstructor;
 import com.craftaga.agabacbone.session.IUserSession;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
