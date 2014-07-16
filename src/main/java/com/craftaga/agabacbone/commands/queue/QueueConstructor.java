@@ -1,6 +1,6 @@
 package com.craftaga.agabacbone.commands.queue;
 
-import com.craftaga.agabacbone.concurrent.PluginManager;
+import com.craftaga.agabacbone.concurrent.IPluginManager;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -11,9 +11,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public abstract class QueueConstructor implements IQueueConstructor {
     private ClassPathXmlApplicationContext context;
-    private PluginManager pluginManager;
+    private IPluginManager pluginManager;
 
-    public QueueConstructor(final ClassPathXmlApplicationContext context, final PluginManager pluginManager)
+    public QueueConstructor(final ClassPathXmlApplicationContext context, final IPluginManager pluginManager)
     {
         this.context = context;
         this.pluginManager = pluginManager;
@@ -23,6 +23,16 @@ public abstract class QueueConstructor implements IQueueConstructor {
     public ClassPathXmlApplicationContext getContext()
     {
         return context;
+    }
+
+    public IPluginManager getPluginManger()
+    {
+        return this.pluginManager;
+    }
+
+    public void setPluginManager(IPluginManager pluginManager)
+    {
+        this.pluginManager = pluginManager;
     }
 
     @Override

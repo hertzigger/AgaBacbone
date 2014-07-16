@@ -244,4 +244,19 @@ public class SessionHandler implements ISessionHandler {
                     + session.getUser().getName() + "] Session unloaded");
         }
     }
+
+    /**
+     * Gets a copy of the players in the session to avoid modification of the userSession
+     *
+     * @return list of players
+     */
+    @Override
+    public List<Player> getPlayers()
+    {
+        ArrayList<Player> players = new ArrayList<Player>();
+        for(IUserSession userSession : userSessionHashMap.values()) {
+            players.add(userSession.getUser());
+        }
+        return players;
+    }
 }

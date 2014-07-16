@@ -12,6 +12,11 @@ public class GlobalScheduledTimerHandle implements IGlobalScheduledTimerHandle {
     private IQueueConstructor queueConstructor;
     private long interval;
 
+    public GlobalScheduledTimerHandle(IQueueConstructor queueConstructor, long interval)
+    {
+        this.queueConstructor = queueConstructor;
+        this.interval = interval;
+    }
     @Override
     public IQueueConstructor getTimerHandler() {
         return queueConstructor;

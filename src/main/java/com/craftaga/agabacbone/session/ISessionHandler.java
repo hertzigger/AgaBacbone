@@ -11,6 +11,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.ArrayList;
+
 /**
  * description
  *
@@ -62,4 +64,6 @@ public interface ISessionHandler extends IPlayerCommandQueueScheduler {
     IWorldManager getWorldManager();
 
     void setContext(ClassPathXmlApplicationContext context);
+
+    java.util.List<Player> getPlayers();
 }
