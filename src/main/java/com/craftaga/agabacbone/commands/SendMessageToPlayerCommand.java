@@ -4,6 +4,8 @@ import com.craftaga.agabacbone.commands.queue.CommandQueue;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+
 /**
  * description
  *
@@ -60,9 +62,8 @@ public class SendMessageToPlayerCommand extends Command {
         if (receiver == null) {
             this.receiver = defaultCommandQueue.getSender();
         }
-        Player[] players = defaultCommandQueue.getPlugin().getPlugin().getServer().getOnlinePlayers();
         boolean online = false;
-        for (Player player : players)
+        for (Player player : defaultCommandQueue.getPlugin().getPlugin().getServer().getOnlinePlayers())
         {
             if(player == receiver) {
                 online = true;

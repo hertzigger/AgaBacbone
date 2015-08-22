@@ -1,7 +1,5 @@
 package com.craftaga.agabacbone.concurrent.handlers.session;
 
-import com.craftaga.agabacbone.commands.IValueHolderCommand;
-import com.craftaga.agabacbone.commands.persistance.CreateInventory;
 import com.craftaga.agabacbone.commands.queue.CommandQueue;
 import com.craftaga.agabacbone.commands.queue.PlayerQueueConstructor;
 import com.craftaga.agabacbone.session.UserSession;
@@ -24,12 +22,12 @@ public class CreateSnapshotHandler extends PlayerQueueConstructor {
     public CommandQueue getCommandQueue() {
         CommandQueue commandQueue = new CommandQueue(getUserSession().getSessionHandler().getPluginManager());
 
-        IValueHolderCommand<Integer> inventory = new CreateInventory(
+        /*IValueHolderCommand<Integer> inventory = new CreateInventory(
                 commandQueue,
                 getUserSession().getPersistenceManager().getInventoryPersistence()
         );
 
-        commandQueue.addCommand(inventory);
+        commandQueue.addCommand(inventory);*/
 
         return commandQueue;
     }
