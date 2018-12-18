@@ -1,3 +1,5 @@
+![SonarQube](https://sonarcloud.io/api/project_badges/measure?project=hertzigger_AgaBacbone&metric=alert_status)
+
 A framework plugin for bukkit.
 
 Currently AgaBacbone provides a multithreaded interface to manage console commands, player sessions, time tasks for
